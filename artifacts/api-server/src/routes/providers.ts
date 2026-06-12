@@ -13,32 +13,16 @@ import {
   CompareProvidersQueryParams,
   GetProviderParams,
   GetProviderListingsParams,
-  ListProviderReviewsParams,
   CreateProviderBody,
 } from "@workspace/api-zod";
 
 const router = Router();
 
-// GET /providers
-router.get("/providers", async (req, res) => {
-  const parsed = ListProvidersQueryParams.safeParse(req.query);
-  if (!parsed.success) {
-    res.status(400).json({ error: "Invalid query params" });
-    return;
-  }
-  const { state, medication, sort, featured } = parsed.data;
-
-  const priceSubquery = db
-    .select({
-      providerId: listingsTable.providerId,
-      minPrice: sql<number>`min(${listingsTable.pricePerVial})`.as("min_price"),
-      maxPrice: sql<number>`max(${listingsTable.pricePerVial})`.as("max_price"),
-    })
-    .from(listingsTable)
-    .groupBy(listingsTable.providerId)
-    .as("prices");
-
-  let query = db
+async function getProvidersWithPrices(
+  providerIds?: number[],
+  sort?: string
+) {
+  let baseQuery = db
     .select({
       id: providersTable.id,
       name: providersTable.name,
@@ -51,32 +35,81 @@ router.get("/providers", async (req, res) => {
       rating: providersTable.rating,
       reviewCount: providersTable.reviewCount,
       statesAvailable: providersTable.statesAvailable,
+      consultationFee: providersTable.consultationFee,
+      lastVerified: providersTable.lastVerified,
       createdAt: providersTable.createdAt,
-      minPrice: priceSubquery.minPrice,
-      maxPrice: priceSubquery.maxPrice,
+      minPrice: sql<number | null>`min(${listingsTable.pricePerVial})`,
+      maxPrice: sql<number | null>`max(${listingsTable.pricePerVial})`,
     })
     .from(providersTable)
-    .leftJoin(priceSubquery, eq(providersTable.id, priceSubquery.providerId));
+    .leftJoin(listingsTable, eq(listingsTable.providerId, providersTable.id))
+    .$dynamic();
 
-  const conditions = [];
+  if (providerIds && providerIds.length > 0) {
+    baseQuery = baseQuery.where(inArray(providersTable.id, providerIds));
+  }
+
+  baseQuery = baseQuery.groupBy(
+    providersTable.id,
+    providersTable.name,
+    providersTable.slug,
+    providersTable.logoUrl,
+    providersTable.description,
+    providersTable.website,
+    providersTable.featured,
+    providersTable.verified,
+    providersTable.rating,
+    providersTable.reviewCount,
+    providersTable.statesAvailable,
+    providersTable.consultationFee,
+    providersTable.lastVerified,
+    providersTable.createdAt
+  );
+
+  if (sort === "price_asc") {
+    baseQuery = baseQuery.orderBy(asc(sql`min(${listingsTable.pricePerVial})`));
+  } else if (sort === "price_desc") {
+    baseQuery = baseQuery.orderBy(desc(sql`max(${listingsTable.pricePerVial})`));
+  } else if (sort === "rating_desc") {
+    baseQuery = baseQuery.orderBy(desc(providersTable.rating));
+  } else {
+    baseQuery = baseQuery.orderBy(desc(providersTable.featured), desc(providersTable.rating));
+  }
+
+  const rows = await baseQuery;
+  return rows.map((r) => ({
+    ...r,
+    createdAt: r.createdAt.toISOString(),
+    lastVerified: r.lastVerified ? r.lastVerified.toISOString() : null,
+  }));
+}
+
+// GET /providers
+router.get("/providers", async (req, res) => {
+  const parsed = ListProvidersQueryParams.safeParse(req.query);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Invalid query params" });
+    return;
+  }
+  const { state, medication, sort, featured } = parsed.data;
+
+  // Collect all filter sets as arrays of IDs
+  let allowedIds: Set<number> | null = null;
 
   if (featured) {
-    conditions.push(eq(providersTable.featured, true));
+    const rows = await db.select({ id: providersTable.id }).from(providersTable).where(eq(providersTable.featured, true));
+    allowedIds = new Set(rows.map((r) => r.id));
   }
 
   if (state) {
-    const providerIdsInState = db
+    const rows = await db
       .selectDistinct({ id: stateAvailabilityTable.providerId })
       .from(stateAvailabilityTable)
       .where(
         sql`${stateAvailabilityTable.stateCode} = ${state} AND ${stateAvailabilityTable.legalStatus} IN ('legal', 'gray_zone')`
       );
-    conditions.push(
-      inArray(
-        providersTable.id,
-        providerIdsInState.as<{ id: number }[]>() as unknown as Parameters<typeof inArray>[1]
-      )
-    );
+    const ids = new Set(rows.map((r) => r.id));
+    allowedIds = allowedIds ? new Set([...allowedIds].filter((id) => ids.has(id))) : ids;
   }
 
   if (medication) {
@@ -86,113 +119,42 @@ router.get("/providers", async (req, res) => {
       .where(eq(medicationsTable.slug, medication))
       .limit(1);
     if (med.length > 0) {
-      const providerIds = db
+      const rows = await db
         .selectDistinct({ id: listingsTable.providerId })
         .from(listingsTable)
         .where(eq(listingsTable.medicationId, med[0].id));
-      conditions.push(
-        inArray(
-          providersTable.id,
-          providerIds.as<{ id: number }[]>() as unknown as Parameters<typeof inArray>[1]
-        )
-      );
+      const ids = new Set(rows.map((r) => r.id));
+      allowedIds = allowedIds ? new Set([...allowedIds].filter((id) => ids.has(id))) : ids;
+    } else {
+      res.json([]);
+      return;
     }
   }
 
-  // Apply where conditions using raw query building
-  let baseQuery;
-  if (conditions.length === 0) {
-    baseQuery = db
-      .select({
-        id: providersTable.id,
-        name: providersTable.name,
-        slug: providersTable.slug,
-        logoUrl: providersTable.logoUrl,
-        description: providersTable.description,
-        website: providersTable.website,
-        featured: providersTable.featured,
-        verified: providersTable.verified,
-        rating: providersTable.rating,
-        reviewCount: providersTable.reviewCount,
-        statesAvailable: providersTable.statesAvailable,
-        createdAt: providersTable.createdAt,
-        minPrice: priceSubquery.minPrice,
-        maxPrice: priceSubquery.maxPrice,
-      })
-      .from(providersTable)
-      .leftJoin(priceSubquery, eq(providersTable.id, priceSubquery.providerId));
-  } else {
-    baseQuery = db
-      .select({
-        id: providersTable.id,
-        name: providersTable.name,
-        slug: providersTable.slug,
-        logoUrl: providersTable.logoUrl,
-        description: providersTable.description,
-        website: providersTable.website,
-        featured: providersTable.featured,
-        verified: providersTable.verified,
-        rating: providersTable.rating,
-        reviewCount: providersTable.reviewCount,
-        statesAvailable: providersTable.statesAvailable,
-        createdAt: providersTable.createdAt,
-        minPrice: priceSubquery.minPrice,
-        maxPrice: priceSubquery.maxPrice,
-      })
-      .from(providersTable)
-      .leftJoin(priceSubquery, eq(providersTable.id, priceSubquery.providerId))
-      .where(sql`${conditions.map((c) => sql`(${c})`).reduce((a, b) => sql`${a} AND ${b}`)}`);
+  const providerIds = allowedIds ? [...allowedIds] : undefined;
+  if (providerIds && providerIds.length === 0) {
+    res.json([]);
+    return;
   }
 
-  let rows: typeof baseQuery extends Promise<infer T> ? T : never;
-  if (sort === "price_asc") {
-    rows = await (baseQuery as typeof query).orderBy(asc(priceSubquery.minPrice)) as typeof rows;
-  } else if (sort === "price_desc") {
-    rows = await (baseQuery as typeof query).orderBy(desc(priceSubquery.maxPrice)) as typeof rows;
-  } else if (sort === "rating_desc") {
-    rows = await (baseQuery as typeof query).orderBy(desc(providersTable.rating)) as typeof rows;
-  } else if (sort === "featured") {
-    rows = await (baseQuery as typeof query).orderBy(desc(providersTable.featured), desc(providersTable.rating)) as typeof rows;
-  } else {
-    rows = await (baseQuery as typeof query).orderBy(desc(providersTable.featured), desc(providersTable.rating)) as typeof rows;
-  }
-
-  res.json(
-    rows.map((r) => ({
-      ...r,
-      createdAt: r.createdAt.toISOString(),
-    }))
-  );
+  const rows = await getProvidersWithPrices(providerIds, sort);
+  res.json(rows);
 });
 
 // GET /providers/featured
 router.get("/providers/featured", async (req, res) => {
-  const rows = await db
-    .select()
+  const featuredIds = await db
+    .select({ id: providersTable.id })
     .from(providersTable)
-    .where(eq(providersTable.featured, true))
-    .orderBy(desc(providersTable.rating));
+    .where(eq(providersTable.featured, true));
 
-  const priceData = await db
-    .select({
-      providerId: listingsTable.providerId,
-      minPrice: sql<number>`min(${listingsTable.pricePerVial})`,
-      maxPrice: sql<number>`max(${listingsTable.pricePerVial})`,
-    })
-    .from(listingsTable)
-    .where(inArray(listingsTable.providerId, rows.map((r) => r.id)))
-    .groupBy(listingsTable.providerId);
+  if (featuredIds.length === 0) {
+    res.json([]);
+    return;
+  }
 
-  const priceMap = new Map(priceData.map((p) => [p.providerId, p]));
-
-  res.json(
-    rows.map((r) => ({
-      ...r,
-      createdAt: r.createdAt.toISOString(),
-      minPrice: priceMap.get(r.id)?.minPrice ?? null,
-      maxPrice: priceMap.get(r.id)?.maxPrice ?? null,
-    }))
-  );
+  const rows = await getProvidersWithPrices(featuredIds.map((r) => r.id), "featured");
+  res.json(rows);
 });
 
 // GET /providers/compare
@@ -202,8 +164,11 @@ router.get("/providers/compare", async (req, res) => {
     res.status(400).json({ error: "Invalid query params" });
     return;
   }
-  const { ids, medication } = parsed.data;
-  const idList = ids.split(",").map((id: string) => parseInt(id.trim(), 10)).filter((id: number) => !isNaN(id));
+  const { ids } = parsed.data;
+  const idList = ids
+    .split(",")
+    .map((id: string) => parseInt(id.trim(), 10))
+    .filter((id: number) => !isNaN(id));
 
   if (idList.length === 0) {
     res.json([]);
@@ -220,7 +185,7 @@ router.get("/providers/compare", async (req, res) => {
     .from(stateAvailabilityTable)
     .where(inArray(stateAvailabilityTable.providerId, idList));
 
-  let listingQuery = db
+  const listings = await db
     .select({
       id: listingsTable.id,
       providerId: listingsTable.providerId,
@@ -238,12 +203,11 @@ router.get("/providers/compare", async (req, res) => {
     .innerJoin(medicationsTable, eq(listingsTable.medicationId, medicationsTable.id))
     .where(inArray(listingsTable.providerId, idList));
 
-  const listings = await listingQuery;
-
   res.json(
     providers.map((p) => ({
       ...p,
       createdAt: p.createdAt.toISOString(),
+      lastVerified: p.lastVerified ? p.lastVerified.toISOString() : null,
       listings: listings
         .filter((l) => l.providerId === p.id)
         .map((l) => ({ ...l, updatedAt: l.updatedAt.toISOString() })),
@@ -298,6 +262,7 @@ router.get("/providers/:id", async (req, res) => {
   res.json({
     ...p,
     createdAt: p.createdAt.toISOString(),
+    lastVerified: p.lastVerified ? p.lastVerified.toISOString() : null,
     listings: listings.map((l) => ({ ...l, updatedAt: l.updatedAt.toISOString() })),
     stateAvailability,
   });
@@ -341,7 +306,7 @@ router.post("/providers", async (req, res) => {
   }
 
   const [created] = await db.insert(providersTable).values(parsed.data).returning();
-  res.status(201).json({ ...created, createdAt: created.createdAt.toISOString() });
+  res.status(201).json({ ...created, createdAt: created.createdAt.toISOString(), lastVerified: null });
 });
 
 export default router;

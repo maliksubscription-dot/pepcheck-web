@@ -42,6 +42,8 @@ export const ListProvidersResponseItem = zod.object({
   "minPrice": zod.number().nullish(),
   "maxPrice": zod.number().nullish(),
   "statesAvailable": zod.number(),
+  "consultationFee": zod.number().nullish(),
+  "lastVerified": zod.string().nullish(),
   "createdAt": zod.string()
 })
 export const ListProvidersResponse = zod.array(ListProvidersResponseItem)
@@ -77,6 +79,8 @@ export const ListFeaturedProvidersResponseItem = zod.object({
   "minPrice": zod.number().nullish(),
   "maxPrice": zod.number().nullish(),
   "statesAvailable": zod.number(),
+  "consultationFee": zod.number().nullish(),
+  "lastVerified": zod.string().nullish(),
   "createdAt": zod.string()
 })
 export const ListFeaturedProvidersResponse = zod.array(ListFeaturedProvidersResponseItem)
@@ -102,6 +106,8 @@ export const CompareProvidersResponseItem = zod.object({
   "verified": zod.boolean(),
   "rating": zod.number().nullish(),
   "reviewCount": zod.number(),
+  "consultationFee": zod.number().nullish(),
+  "lastVerified": zod.string().nullish(),
   "listings": zod.array(zod.object({
   "id": zod.number(),
   "providerId": zod.number(),
@@ -144,6 +150,8 @@ export const GetProviderResponse = zod.object({
   "verified": zod.boolean(),
   "rating": zod.number().nullish(),
   "reviewCount": zod.number(),
+  "consultationFee": zod.number().nullish(),
+  "lastVerified": zod.string().nullish(),
   "listings": zod.array(zod.object({
   "id": zod.number(),
   "providerId": zod.number(),
@@ -262,6 +270,19 @@ export const SubmitReviewBody = zod.object({
   "providerId": zod.number(),
   "rating": zod.number().min(1).max(submitReviewBodyRatingMax),
   "comment": zod.string().optional()
+})
+
+
+/**
+ * @summary Track a provider outbound click
+ */
+export const TrackProviderClickBody = zod.object({
+  "providerId": zod.number(),
+  "source": zod.string().optional().describe('Page or context where the click occurred (e.g. compare, provider-detail, state-page)')
+})
+
+export const TrackProviderClickResponse = zod.object({
+  "status": zod.string()
 })
 
 

@@ -1,0 +1,117 @@
+You are the product manager and lead growth strategist for Pepcheck.
+
+The current website is an MVP for comparing compounded GLP-1 providers. Do not redesign everything from scratch. Instead, improve the existing product with a focus on validating demand and generating traffic.
+
+Context:
+
+Pepcheck helps users compare GLP-1 providers by:
+
+* Monthly price
+* Medication type (tirzepatide, semaglutide, etc.)
+* State availability
+* Provider legitimacy and compliance status
+* Reviews and ratings
+
+Our goal is NOT to immediately sell featured listings. Our first objective is to become the trusted comparison platform people use before choosing a provider.
+
+Priority roadmap:
+
+PHASE 1: TRAFFIC & VALIDATION
+
+1. Create SEO-focused landing pages:
+
+   * Cheapest Tirzepatide Providers
+   * Cheapest Semaglutide Providers
+   * Best GLP-1 Providers by State
+   * Compare GLP-1 Providers
+   * GLP-1 Price Tracker
+
+2. Add state pages:
+
+   * /texas
+   * /florida
+   * /california
+   * etc.
+
+Each page should dynamically show providers available in that state.
+
+3. Add a searchable comparison table:
+
+   * Filter by state
+   * Filter by medication
+   * Sort by lowest price
+   * Sort by highest rated
+   * Sort by fastest delivery
+
+4. Add clear CTAs:
+
+   * Compare Providers
+   * Find Providers in Your State
+   * View Cheapest Options
+
+5. Add analytics tracking for:
+
+   * Search usage
+   * Filter usage
+   * Provider clicks
+   * Most viewed states
+
+PHASE 2: DATA & TRUST
+
+6. Create a provider database structure with:
+
+   * Provider name
+   * Website
+   * Medication types
+   * Monthly price
+   * Consultation fee
+   * State availability
+   * Review score
+   * Last verified date
+   * Compliance notes
+
+7. Add trust signals:
+
+   * "Last Updated" timestamps
+   * Methodology page
+   * Disclaimer page
+   * About page
+   * Contact page
+
+8. Add provider profile pages with:
+
+   * Pricing breakdown
+   * Pros and cons
+   * State availability
+   * Review summary
+   * Compliance information
+
+PHASE 3: FUTURE MONETIZATION
+
+9. Build infrastructure for referral tracking:
+
+   * Outbound click tracking
+   * Unique provider referral links
+   * Lead attribution
+
+10. Add placeholder areas for future sponsored placements, but do not make them prominent yet.
+
+Design goals:
+
+* Professional healthcare comparison platform
+* Similar trust level to NerdWallet, G2, or Compare the Market
+* Clean, data-first design
+* Mobile-first responsive experience
+* Fast loading pages
+* Strong SEO structure
+
+Important:
+Focus first on building traffic-generating pages, comparison functionality, trust signals, and provider data architecture. Do not spend time building subscription systems, payment systems, or complex user accounts until traffic validation exists.
+
+After completing the audit, provide:
+
+1. What already exists
+2. What is missing
+3. The highest-impact improvements
+4. The exact implementation order
+5. Estimated completion effort for each task

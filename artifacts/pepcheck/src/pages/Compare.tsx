@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLocation, useSearch } from "wouter";
-import { useListProviders, useListStates, useListMedications, useCompareProviders } from "@workspace/api-client-react";
+import { useListProviders, useListStates, useListMedications, useCompareProviders, getCompareProvidersQueryKey } from "@workspace/api-client-react";
 import { ShieldCheck, Star, Pill, MapPin, Search, SlidersHorizontal, ArrowLeftRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,7 +52,7 @@ export default function Compare() {
 
   const { data: comparisonData, isLoading: isComparisonLoading } = useCompareProviders(
     { ids: selectedToCompare.join(",") },
-    { query: { enabled: isCompareMode && selectedToCompare.length > 0 } }
+    { query: { queryKey: getCompareProvidersQueryKey({ ids: selectedToCompare.join(",") }), enabled: isCompareMode && selectedToCompare.length > 0 } }
   );
 
   return (

@@ -51,7 +51,7 @@ export default function SubmitReview() {
       onError: (error) => {
         toast({
           title: "Error submitting review",
-          description: error.error || "Please try again later.",
+          description: (error as { error?: string }).error || "Please try again later.",
           variant: "destructive",
         });
       }

@@ -14,6 +14,8 @@ export const providersTable = pgTable("providers", {
   rating: real("rating"),
   reviewCount: integer("review_count").notNull().default(0),
   statesAvailable: integer("states_available").notNull().default(0),
+  consultationFee: real("consultation_fee"),
+  lastVerified: timestamp("last_verified"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

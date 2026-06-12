@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ClickEventInput,
   CompareProvidersParams,
   ErrorResponse,
   GetMedicationPriceRangeParams,
@@ -985,6 +986,77 @@ export const useSubmitReview = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getSubmitReviewMutationOptions(options));
+    }
+
+export const getTrackProviderClickUrl = () => {
+
+
+
+
+  return `/api/track/click`
+}
+
+/**
+ * @summary Track a provider outbound click
+ */
+export const trackProviderClick = async (clickEventInput: ClickEventInput, options?: RequestInit): Promise<HealthStatus> => {
+
+  return customFetch<HealthStatus>(getTrackProviderClickUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      clickEventInput,)
+  }
+);}
+
+
+
+
+export const getTrackProviderClickMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trackProviderClick>>, TError,{data: BodyType<ClickEventInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof trackProviderClick>>, TError,{data: BodyType<ClickEventInput>}, TContext> => {
+
+const mutationKey = ['trackProviderClick'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof trackProviderClick>>, {data: BodyType<ClickEventInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  trackProviderClick(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TrackProviderClickMutationResult = NonNullable<Awaited<ReturnType<typeof trackProviderClick>>>
+    export type TrackProviderClickMutationBody = BodyType<ClickEventInput>
+    export type TrackProviderClickMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Track a provider outbound click
+ */
+export const useTrackProviderClick = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trackProviderClick>>, TError,{data: BodyType<ClickEventInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof trackProviderClick>>,
+        TError,
+        {data: BodyType<ClickEventInput>},
+        TContext
+      > => {
+      return useMutation(getTrackProviderClickMutationOptions(options));
     }
 
 export const getGetPlatformStatsUrl = () => {

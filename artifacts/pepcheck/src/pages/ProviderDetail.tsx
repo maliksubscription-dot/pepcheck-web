@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { StateAvailabilityLegalStatus } from "@workspace/api-client-react/src/generated/api.schemas";
+import { StateAvailabilityLegalStatus, getGetProviderQueryKey, getListProviderReviewsQueryKey } from "@workspace/api-client-react";
 
 const statusColorMap: Record<StateAvailabilityLegalStatus, string> = {
   legal: "bg-green-100 text-green-800 border-green-200",
@@ -29,11 +29,11 @@ export default function ProviderDetail() {
   const providerId = match && params?.id ? parseInt(params.id) : 0;
 
   const { data: provider, isLoading: isProviderLoading } = useGetProvider(providerId, {
-    query: { enabled: !!providerId }
+    query: { queryKey: getGetProviderQueryKey(providerId), enabled: !!providerId }
   });
 
   const { data: reviews, isLoading: isReviewsLoading } = useListProviderReviews(providerId, {
-    query: { enabled: !!providerId }
+    query: { queryKey: getListProviderReviewsQueryKey(providerId), enabled: !!providerId }
   });
 
   if (isProviderLoading) {

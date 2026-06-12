@@ -275,6 +275,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Review"
 
+  /track/click:
+    post:
+      operationId: trackProviderClick
+      tags: [stats]
+      summary: Track a provider outbound click
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClickEventInput"
+      responses:
+        "200":
+          description: Tracked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
   /stats:
     get:
       operationId: getPlatformStats
@@ -355,6 +374,10 @@ components:
           type: ["number", "null"]
         statesAvailable:
           type: integer
+        consultationFee:
+          type: ["number", "null"]
+        lastVerified:
+          type: ["string", "null"]
         createdAt:
           type: string
       required:
@@ -390,6 +413,10 @@ components:
           type: ["number", "null"]
         reviewCount:
           type: integer
+        consultationFee:
+          type: ["number", "null"]
+        lastVerified:
+          type: ["string", "null"]
         listings:
           type: array
           items:
@@ -580,6 +607,17 @@ components:
       required:
         - name
         - slug
+
+    ClickEventInput:
+      type: object
+      properties:
+        providerId:
+          type: integer
+        source:
+          type: string
+          description: Page or context where the click occurred (e.g. compare, provider-detail, state-page)
+      required:
+        - providerId
 
     ReviewInput:
       type: object

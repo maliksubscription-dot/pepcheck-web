@@ -23,6 +23,10 @@ export interface ProviderDetail {
   /** @nullable */
   rating?: number | null;
   reviewCount: number;
+  /** @nullable */
+  consultationFee?: number | null;
+  /** @nullable */
+  lastVerified?: string | null;
   listings: Listing[];
   stateAvailability: StateAvailability[];
   createdAt: string;

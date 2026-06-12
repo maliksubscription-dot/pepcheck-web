@@ -42,6 +42,10 @@ export interface Provider {
   /** @nullable */
   maxPrice?: number | null;
   statesAvailable: number;
+  /** @nullable */
+  consultationFee?: number | null;
+  /** @nullable */
+  lastVerified?: string | null;
   createdAt: string;
 }
 
@@ -93,6 +97,10 @@ export interface ProviderDetail {
   /** @nullable */
   rating?: number | null;
   reviewCount: number;
+  /** @nullable */
+  consultationFee?: number | null;
+  /** @nullable */
+  lastVerified?: string | null;
   listings: Listing[];
   stateAvailability: StateAvailability[];
   createdAt: string;
@@ -156,6 +164,12 @@ export interface ProviderInput {
   description?: string;
   website?: string;
   logoUrl?: string;
+}
+
+export interface ClickEventInput {
+  providerId: number;
+  /** Page or context where the click occurred (e.g. compare, provider-detail, state-page) */
+  source?: string;
 }
 
 export interface ReviewInput {

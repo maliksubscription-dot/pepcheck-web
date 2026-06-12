@@ -26,5 +26,9 @@ export interface Provider {
   /** @nullable */
   maxPrice?: number | null;
   statesAvailable: number;
+  /** @nullable */
+  consultationFee?: number | null;
+  /** @nullable */
+  lastVerified?: string | null;
   createdAt: string;
 }
