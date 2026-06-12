@@ -18,13 +18,32 @@ export interface ProviderDetail {
   description?: string | null;
   /** @nullable */
   website?: string | null;
+  /** @nullable */
+  affiliateUrl?: string | null;
   featured: boolean;
   verified: boolean;
+  availableNow: boolean;
   /** @nullable */
   rating?: number | null;
   reviewCount: number;
   /** @nullable */
   consultationFee?: number | null;
+  consultationIncluded: boolean;
+  /** @nullable */
+  shippingFee?: number | null;
+  freeShipping: boolean;
+  /** @nullable */
+  firstMonthCost?: number | null;
+  /** @nullable */
+  ongoingMonthlyCost?: number | null;
+  /** @nullable */
+  avgDeliveryDays?: number | null;
+  /** @nullable */
+  pros?: string | null;
+  /** @nullable */
+  cons?: string | null;
+  /** @nullable */
+  pharmacyInfo?: string | null;
   /** @nullable */
   lastVerified?: string | null;
   listings: Listing[];

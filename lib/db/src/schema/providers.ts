@@ -9,12 +9,28 @@ export const providersTable = pgTable("providers", {
   logoUrl: text("logo_url"),
   description: text("description"),
   website: text("website"),
+  affiliateUrl: text("affiliate_url"),
   featured: boolean("featured").notNull().default(false),
   verified: boolean("verified").notNull().default(false),
+  availableNow: boolean("available_now").notNull().default(true),
   rating: real("rating"),
   reviewCount: integer("review_count").notNull().default(0),
   statesAvailable: integer("states_available").notNull().default(0),
+  // Fees
   consultationFee: real("consultation_fee"),
+  consultationIncluded: boolean("consultation_included").notNull().default(false),
+  shippingFee: real("shipping_fee"),
+  freeShipping: boolean("free_shipping").notNull().default(false),
+  // Costs
+  firstMonthCost: real("first_month_cost"),
+  ongoingMonthlyCost: real("ongoing_monthly_cost"),
+  // Logistics
+  avgDeliveryDays: integer("avg_delivery_days"),
+  // Content (stored as JSON strings)
+  pros: text("pros"),
+  cons: text("cons"),
+  pharmacyInfo: text("pharmacy_info"),
+  // Metadata
   lastVerified: timestamp("last_verified"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

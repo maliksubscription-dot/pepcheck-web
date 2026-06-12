@@ -1,0 +1,231 @@
+Improve the Pepcheck website by building the core side-by-side comparison experience.
+
+Do not redesign the whole website from scratch. Keep the current branding and layout where possible, but upgrade the comparison flow so users can quickly find the cheapest legal GLP-1 provider in their state.
+
+Main goal:
+A visitor should be able to select their state, choose a medication, compare providers side by side, and click through to a provider detail page in under 30 seconds.
+
+Build the following:
+
+1. Homepage search section
+
+Add a clear hero section with this headline:
+
+“Find the cheapest verified GLP-1 provider in your state”
+
+Subheadline:
+
+“Compare prices, medication options, state availability, shipping, consultation fees, and verification status before choosing a provider.”
+
+Add two dropdowns:
+
+* State
+* Medication
+
+Medication options:
+
+* Tirzepatide
+* Semaglutide
+* Both
+
+Add a CTA button:
+“Compare Providers”
+
+When clicked, this should take users to the comparison results page with the selected filters applied.
+
+2. Comparison results page
+
+Create a side-by-side provider comparison table.
+
+The table should show:
+
+* Provider name
+* Starting monthly price
+* First-month cost
+* Ongoing monthly cost
+* Medication offered
+* State availability
+* Consultation fee
+* Shipping fee
+* Average delivery time
+* User rating
+* Verification status
+* Last verified date
+* CTA button: “View Details”
+* CTA button: “Visit Provider”
+
+The table should be sortable by:
+
+* Lowest price
+* Highest rating
+* Fastest delivery
+* Recently verified
+
+Add filters on the side or top:
+
+* State
+* Medication
+* Price range
+* Free shipping
+* Consultation included
+* Verified providers only
+* Available now
+
+3. Provider cards for mobile
+
+On mobile, do not show a cramped table.
+
+Instead, show provider cards with:
+
+* Provider name
+* Starting price
+* Medication offered
+* Available in selected state: Yes/No
+* Verification badge
+* Rating
+* Last verified date
+* View Details button
+* Visit Provider button
+
+Make sure the mobile version is clean, easy to read, and fast.
+
+4. Provider detail pages
+
+Each provider should have its own detail page.
+
+Show:
+
+* Provider name
+* Short summary
+* Starting monthly cost
+* First-month cost
+* Ongoing monthly cost
+* Medication offered
+* Consultation fee
+* Shipping fee
+* Average delivery time
+* States served
+* Verification status
+* Last verified date
+
+Add a section called “Price Breakdown” with:
+
+* Starter dose cost
+* Medium dose cost
+* Higher dose cost
+* Any setup fee
+* Shipping fee
+* Consultation fee
+
+Add a section called “Pros and Cons”.
+
+Add a section called “Availability”.
+
+Add a section called “Important Disclaimer”.
+
+Disclaimer text:
+“Pepcheck does not provide medical advice, prescribe medication, or sell medication. Provider information is for comparison purposes only and should be verified directly with the provider before making a healthcare decision.”
+
+5. Trust and verification badges
+
+Add small badges across the site:
+
+* Price Verified
+* State Availability Checked
+* Pharmacy Info Checked
+* Last Updated
+
+Each provider should clearly show whether its data is verified or needs updating.
+
+6. Database/data structure
+
+Create or update the provider data model to include:
+
+* id
+* providerName
+* slug
+* websiteUrl
+* startingPrice
+* firstMonthCost
+* ongoingMonthlyCost
+* medications
+* statesAvailable
+* consultationFee
+* consultationIncluded
+* shippingFee
+* freeShipping
+* averageDeliveryDays
+* rating
+* reviewCount
+* verificationStatus
+* lastVerifiedDate
+* availableNow
+* priceBreakdown
+* pros
+* cons
+* complianceNotes
+* pharmacyInfo
+* affiliateUrl
+
+Use placeholder/sample data for now if real data is not available.
+
+7. Tracking preparation
+
+Add click tracking events for:
+
+* Compare Providers button clicks
+* State filter usage
+* Medication filter usage
+* Sort option usage
+* View Details clicks
+* Visit Provider clicks
+
+This can be simple console logging for now, but structure it so analytics can be added later.
+
+8. SEO structure
+
+Make sure comparison pages have SEO-friendly headings and page titles.
+
+Example:
+
+* “Cheapest GLP-1 Providers in Texas”
+* “Compare Tirzepatide Providers in Florida”
+* “Best Semaglutide Providers by Price”
+
+Add clean URL patterns if possible:
+
+* /compare
+* /providers/[provider-slug]
+* /states/[state]
+* /medications/tirzepatide
+* /medications/semaglutide
+
+Important design direction:
+
+* Clean healthcare comparison platform
+* Similar feel to NerdWallet, GoodRx, G2, or Compare the Market
+* Professional, trustworthy, simple
+* Data-first layout
+* Avoid looking like a shady supplement or weight-loss ad site
+
+Important:
+Do not build payment systems, user accounts, subscriptions, or complex review systems yet.
+
+Focus only on:
+
+* Comparison table
+* Filters
+* Provider cards
+* Provider detail pages
+* Trust badges
+* Clean data structure
+* Click tracking
+* SEO basics
+
+After implementing, give me:
+
+1. A summary of what was changed
+2. Any files/components created or edited
+3. How the filtering system works
+4. What placeholder provider data was added
+5. What the next best improvement should be

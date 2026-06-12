@@ -16,8 +16,11 @@ export interface Provider {
   description?: string | null;
   /** @nullable */
   website?: string | null;
+  /** @nullable */
+  affiliateUrl?: string | null;
   featured: boolean;
   verified: boolean;
+  availableNow: boolean;
   /** @nullable */
   rating?: number | null;
   reviewCount: number;
@@ -28,6 +31,28 @@ export interface Provider {
   statesAvailable: number;
   /** @nullable */
   consultationFee?: number | null;
+  consultationIncluded: boolean;
+  /** @nullable */
+  shippingFee?: number | null;
+  freeShipping: boolean;
+  /** @nullable */
+  firstMonthCost?: number | null;
+  /** @nullable */
+  ongoingMonthlyCost?: number | null;
+  /** @nullable */
+  avgDeliveryDays?: number | null;
+  /**
+     * JSON-encoded string array
+     * @nullable
+     */
+  pros?: string | null;
+  /**
+     * JSON-encoded string array
+     * @nullable
+     */
+  cons?: string | null;
+  /** @nullable */
+  pharmacyInfo?: string | null;
   /** @nullable */
   lastVerified?: string | null;
   createdAt: string;

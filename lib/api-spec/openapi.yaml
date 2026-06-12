@@ -360,9 +360,13 @@ components:
           type: ["string", "null"]
         website:
           type: ["string", "null"]
+        affiliateUrl:
+          type: ["string", "null"]
         featured:
           type: boolean
         verified:
+          type: boolean
+        availableNow:
           type: boolean
         rating:
           type: ["number", "null"]
@@ -376,6 +380,26 @@ components:
           type: integer
         consultationFee:
           type: ["number", "null"]
+        consultationIncluded:
+          type: boolean
+        shippingFee:
+          type: ["number", "null"]
+        freeShipping:
+          type: boolean
+        firstMonthCost:
+          type: ["number", "null"]
+        ongoingMonthlyCost:
+          type: ["number", "null"]
+        avgDeliveryDays:
+          type: ["integer", "null"]
+        pros:
+          type: ["string", "null"]
+          description: JSON-encoded string array
+        cons:
+          type: ["string", "null"]
+          description: JSON-encoded string array
+        pharmacyInfo:
+          type: ["string", "null"]
         lastVerified:
           type: ["string", "null"]
         createdAt:
@@ -386,6 +410,9 @@ components:
         - slug
         - featured
         - verified
+        - availableNow
+        - consultationIncluded
+        - freeShipping
         - reviewCount
         - statesAvailable
         - createdAt
@@ -405,9 +432,13 @@ components:
           type: ["string", "null"]
         website:
           type: ["string", "null"]
+        affiliateUrl:
+          type: ["string", "null"]
         featured:
           type: boolean
         verified:
+          type: boolean
+        availableNow:
           type: boolean
         rating:
           type: ["number", "null"]
@@ -415,6 +446,24 @@ components:
           type: integer
         consultationFee:
           type: ["number", "null"]
+        consultationIncluded:
+          type: boolean
+        shippingFee:
+          type: ["number", "null"]
+        freeShipping:
+          type: boolean
+        firstMonthCost:
+          type: ["number", "null"]
+        ongoingMonthlyCost:
+          type: ["number", "null"]
+        avgDeliveryDays:
+          type: ["integer", "null"]
+        pros:
+          type: ["string", "null"]
+        cons:
+          type: ["string", "null"]
+        pharmacyInfo:
+          type: ["string", "null"]
         lastVerified:
           type: ["string", "null"]
         listings:
@@ -433,6 +482,9 @@ components:
         - slug
         - featured
         - verified
+        - availableNow
+        - consultationIncluded
+        - freeShipping
         - reviewCount
         - listings
         - stateAvailability
