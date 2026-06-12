@@ -1,19 +1,21 @@
-# [Project name]
+# Pepcheck
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A GLP-1 compounded medication comparison platform that shows real-time pricing, vial concentrations, and jurisdiction-level legality for vetted telehealth pharmacies.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+- `pnpm --filter @workspace/pepcheck run dev` — run the frontend (port 20935)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `DATABASE_URL` — Postgres connection string (auto-provisioned)
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Frontend: React + Vite + Tailwind CSS + shadcn/ui, wouter routing
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
@@ -22,15 +24,26 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — API contract source of truth
+- `lib/db/src/schema/` — Drizzle table definitions (medications, providers, listings, stateAvailability, reviews)
+- `artifacts/api-server/src/routes/` — Express route handlers
+- `artifacts/pepcheck/src/` — React frontend (pages, components)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- OpenAPI-first: all types generated from `openapi.yaml` via Orval; never hand-write types that codegen produces
+- Body schemas use entity-shaped names (`ProviderInput`, `ReviewInput`) not operation-shaped (`CreateProviderBody`) to avoid TS2308 collisions
+- Featured providers route `/providers/featured` is registered before `/:id` in Express to avoid param shadowing
+- State legality is stored per-provider per-state, allowing nuanced status per jurisdiction
+- Reviews are flagged `verified: false` on submission; manual verification before publishing
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- **Home** (`/`) — hero search by state, platform stats, featured providers strip
+- **Compare** (`/compare`) — filter sidebar (state, medication, sort), provider cards, side-by-side comparison mode
+- **Provider Detail** (`/providers/:id`) — pricing table by medication, state availability, reviews
+- **Medications Guide** (`/medications`) — drug cards with price ranges
+- **Submit Review** (`/submit-review`) — patient review submission form
 
 ## User preferences
 
@@ -38,7 +51,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- After any `openapi.yaml` change, run `pnpm --filter @workspace/api-spec run codegen` before touching the frontend
+- Run `pnpm --filter @workspace/db run push` after schema changes to sync the dev database
+- The `providers.ts` route file registers `/providers/featured` and `/providers/compare` BEFORE `/:id` — keep this order
+- The `price-range` endpoint takes `medication` as a query param (not path param) to avoid Orval `GetMedicationPriceRangeParams` TS2308 collision
 
 ## Pointers
 

@@ -3,13 +3,22 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Pepcheck API — GLP-1 compounded medication comparison platform
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: providers
+    description: Telehealth provider operations
+  - name: medications
+    description: Medication operations
+  - name: reviews
+    description: Provider review operations
+  - name: stats
+    description: Platform stats and summaries
+
 paths:
   /healthz:
     get:
@@ -24,6 +33,262 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /providers:
+    get:
+      operationId: listProviders
+      tags: [providers]
+      summary: List providers
+      description: List all vetted telehealth providers with optional filtering
+      parameters:
+        - name: state
+          in: query
+          schema:
+            type: string
+          description: Filter by US state code (e.g. CA, TX)
+        - name: medication
+          in: query
+          schema:
+            type: string
+          description: Filter by medication slug
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [price_asc, price_desc, rating_desc, featured]
+          description: Sort order
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+          description: Only return featured providers
+      responses:
+        "200":
+          description: List of providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+    post:
+      operationId: createProvider
+      tags: [providers]
+      summary: Create a provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProviderInput"
+      responses:
+        "201":
+          description: Created provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Provider"
+
+  /providers/featured:
+    get:
+      operationId: listFeaturedProviders
+      tags: [providers]
+      summary: Get featured providers
+      description: Returns only featured/sponsored providers
+      responses:
+        "200":
+          description: Featured providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Provider"
+
+  /providers/compare:
+    get:
+      operationId: compareProviders
+      tags: [providers]
+      summary: Compare providers side by side
+      description: Returns detailed comparison data for selected providers
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Comma-separated provider IDs
+        - name: medication
+          in: query
+          schema:
+            type: string
+          description: Medication slug to compare pricing for
+      responses:
+        "200":
+          description: Provider comparison data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProviderDetail"
+
+  /providers/{id}:
+    get:
+      operationId: getProvider
+      tags: [providers]
+      summary: Get provider by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Provider detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /providers/{id}/listings:
+    get:
+      operationId: getProviderListings
+      tags: [providers]
+      summary: Get medication listings for a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+
+  /providers/{id}/reviews:
+    get:
+      operationId: listProviderReviews
+      tags: [reviews]
+      summary: Get reviews for a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+
+  /medications:
+    get:
+      operationId: listMedications
+      tags: [medications]
+      summary: List all medications
+      responses:
+        "200":
+          description: Medications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Medication"
+
+  /medications/price-range:
+    get:
+      operationId: getMedicationPriceRange
+      tags: [medications]
+      summary: Get price range for a medication
+      description: Returns min/max/avg prices across all providers for a medication
+      parameters:
+        - name: medication
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Medication slug to query
+        - name: state
+          in: query
+          schema:
+            type: string
+          description: Optionally filter by state
+      responses:
+        "200":
+          description: Price range stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceRange"
+
+  /states:
+    get:
+      operationId: listStates
+      tags: [providers]
+      summary: List US states with availability info
+      responses:
+        "200":
+          description: States
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StateInfo"
+
+  /reviews:
+    post:
+      operationId: submitReview
+      tags: [reviews]
+      summary: Submit a review for a provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Review submitted (pending verification)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /stats:
+    get:
+      operationId: getPlatformStats
+      tags: [stats]
+      summary: Get platform-wide summary stats
+      description: Provider counts, avg prices, popular medications
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +299,299 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Medication:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        drugClass:
+          type: string
+      required:
+        - id
+        - slug
+        - name
+        - drugClass
+
+    Provider:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        verified:
+          type: boolean
+        rating:
+          type: ["number", "null"]
+        reviewCount:
+          type: integer
+        minPrice:
+          type: ["number", "null"]
+        maxPrice:
+          type: ["number", "null"]
+        statesAvailable:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - featured
+        - verified
+        - reviewCount
+        - statesAvailable
+        - createdAt
+
+    ProviderDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        featured:
+          type: boolean
+        verified:
+          type: boolean
+        rating:
+          type: ["number", "null"]
+        reviewCount:
+          type: integer
+        listings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Listing"
+        stateAvailability:
+          type: array
+          items:
+            $ref: "#/components/schemas/StateAvailability"
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - slug
+        - featured
+        - verified
+        - reviewCount
+        - listings
+        - stateAvailability
+        - createdAt
+
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+        providerId:
+          type: integer
+        medicationId:
+          type: integer
+        medicationName:
+          type: string
+        medicationSlug:
+          type: string
+        concentrationMgMl:
+          type: number
+        vialSizeMl:
+          type: number
+        pricePerVial:
+          type: number
+        inStock:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        updatedAt:
+          type: string
+      required:
+        - id
+        - providerId
+        - medicationId
+        - medicationName
+        - medicationSlug
+        - concentrationMgMl
+        - vialSizeMl
+        - pricePerVial
+        - inStock
+        - updatedAt
+
+    StateAvailability:
+      type: object
+      properties:
+        stateCode:
+          type: string
+        stateName:
+          type: string
+        legalStatus:
+          type: string
+          enum: [legal, gray_zone, restricted, unavailable]
+        notes:
+          type: ["string", "null"]
+      required:
+        - stateCode
+        - stateName
+        - legalStatus
+
+    StateInfo:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        providerCount:
+          type: integer
+        legalStatusSummary:
+          type: string
+          enum: [legal, gray_zone, restricted, unavailable, mixed]
+      required:
+        - code
+        - name
+        - providerCount
+        - legalStatusSummary
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        providerId:
+          type: integer
+        rating:
+          type: integer
+        comment:
+          type: ["string", "null"]
+        verified:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - providerId
+        - rating
+        - verified
+        - createdAt
+
+    PriceRange:
+      type: object
+      properties:
+        medicationSlug:
+          type: string
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
+        avgPrice:
+          type: number
+        providerCount:
+          type: integer
+      required:
+        - medicationSlug
+        - minPrice
+        - maxPrice
+        - avgPrice
+        - providerCount
+
+    PlatformStats:
+      type: object
+      properties:
+        totalProviders:
+          type: integer
+        verifiedProviders:
+          type: integer
+        totalMedications:
+          type: integer
+        totalReviews:
+          type: integer
+        avgPricePerVial:
+          type: number
+        statesCovered:
+          type: integer
+        popularMedications:
+          type: array
+          items:
+            type: object
+            properties:
+              slug:
+                type: string
+              name:
+                type: string
+              providerCount:
+                type: integer
+            required:
+              - slug
+              - name
+              - providerCount
+      required:
+        - totalProviders
+        - verifiedProviders
+        - totalMedications
+        - totalReviews
+        - avgPricePerVial
+        - statesCovered
+        - popularMedications
+
+    ProviderInput:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        website:
+          type: string
+        logoUrl:
+          type: string
+      required:
+        - name
+        - slug
+
+    ReviewInput:
+      type: object
+      properties:
+        providerId:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+      required:
+        - providerId
+        - rating

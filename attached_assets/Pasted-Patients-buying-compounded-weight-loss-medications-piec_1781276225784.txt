@@ -1,0 +1,99 @@
+Patients buying compounded weight-loss medications piece together pricing from Reddit threads and outdated pharmacy listings. Prices swing from $200 to $600 per vial for the same concentration. Compounding regulations shift by jurisdiction and change without warning. Half the telehealth providers advertising online operate in legal gray zones that look identical to the legitimate ones. Buyers want safe, affordable medication. Instead they get a comparison nightmare.
+
+Pepcheck is a comparison platform that shows real-time pricing, vial concentrations, and jurisdiction-level legality for vetted telehealth pharmacies selling compounded GLP-1 medications. A patient picks a region, compares options side by side, reads verified reviews, and confirms the provider operates legally where they live. Provider listings update when shortage rules or compounding regulations change. Telehealth providers pay for placement. Patients get qualified options checked for legality and pricing accuracy before they commit.
+
+Start with an Airtable backend listing 12 major telehealth providers with their pricing, concentrations, and regional availability. Run a lightweight scraper over provider sites and regulatory feeds weekly. Build a frontend in Webflow where users filter by location and sort by price. Add a basic review system using Typeform and manually verify submissions before publishing. Ship it to compounded medication communities as a free beta. Watch which filters people use and which questions they ask before adding features.
+
+Providers pay $500 a month for featured placement or $50 per qualified lead. Premium features like legality alerts, price-drop notifications, and insurance lookups add a subscription layer. White-label versions let clinics run the same comparison for their own patients. Insurers steer members toward compliant providers, pushing the platform past direct-to-consumer. Compounded weight-loss medications are the entry point. Hormone therapy and peptides slot into the same price-and-legality table. A patient who finds a vetted, legal option at a fair price stops refreshing Reddit and places the order.
+
+*Analysis, scores, and revenue estimates are educational and based on assumptions. Results vary by execution and market conditions.
+
+
+Keyword:
+Compounded tirzepatide
+
+49.5K
+Volume
+
++494900%
+Growth
+
+2023
+2024
+2025
+2026
+0
+20k
+40k
+60k
+80k
+
+Opportunity
+8
+Strong
+
+Problem
+9
+Severe Pain
+
+Feasibility
+6
+Challenging
+
+Why Now
+9
+Perfect Timing
+Business Fit
+
+💰
+Revenue Potential
+$100K-$1M ARR potential with niche market focus and growing demand for legality tools.
+$$
+
+🛠️
+Execution Difficulty
+High complexity due to regulatory compliance and data handling, 1-2 month MVP timeline.
+8/10
+
+🚀
+Go-To-Market
+Strong market potential with clear traction across Reddit, Facebook, and YouTube.
+9/10
+🧠
+Right for You?
+Ideal for founders with pharma or compliance expertise.
+Find Out
+Research Tool
+Get a Report Exactly Like This for Your Idea
+Have your own business idea? Our AI Research Agent conducts a comprehensive 40-step analysis to validate and research any idea you give it.
+
+Research My Idea
+Offer
+Lead Magnet
+GLP-1 Price & Legality Comparison Tool (Free)
+A free tool providing a basic comparison of prices and legality for compounded GLP-1 medications.
+
+Frontend
+Advanced Comparison Access ($5/month)
+Unlock advanced features including detailed concentration comparisons and legality alerts in different states.
+
+Core
+Premium Subscriber Plan ($10/month)
+Full access to all platform features, including real-time updates and unlimited provider reviews.
+
+View full value ladder
+→
+Why Now?
+With the GLP-1 market surging towards $200 billion by 2030 and the compounded alternatives creating a unique demand amid regulatory complexities, now is the perfect time to launch a trusted comparison tool for compounded GLP-1 pricing and legality.
+
+See why this opportunity matters now
+Proof & Signals
+The demand for a platform comparing prices and legality of compounded GLP-1 medications is supported by strong online community discussions, urgency due to regulatory changes, and the desire to navigate market complexities efficiently. Regulatory scrutiny poses challenges, but the timing is optimal due to market growth and ongoing regulatory shifts.
+
+Explore proof & signals
+The Market Gap
+With regulatory changes and a booming GLP-1 medication demand, there's a critical gap for a reliable platform offering price and legality information on compounded alternatives.
+
+Understand the market opportunity
+Execution Plan
+Launch a powerful MVP offering real-time price and legality checks for compounded GLP-1 patients, standing out with verified reviews. Integrate pharmacy data to create a free comparison widget, then drive growth through Reddit and Facebook engagement. Ready to expand into more medications and hit 3,000 active users next?
