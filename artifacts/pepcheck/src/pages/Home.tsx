@@ -253,6 +253,61 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ============================================================
+           TALLY.SO EMAIL SIGNUP FORM
+           Collects email + medication interest from homepage visitors.
+
+           TO ACTIVATE: Replace YOUR_TALLY_FORM_ID in the src URL below
+           with your real Tally form ID.
+           Find it in: tally.so → your form → Share → Embed → the ID
+           in the URL (e.g. https://tally.so/embed/wA1bc2 → ID is wA1bc2)
+           ============================================================ */}
+      <section className="py-16 px-4 bg-primary/5 border-t border-b">
+        <div className="container mx-auto max-w-2xl text-center">
+          <div className="mb-6">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full mb-4">
+              Free Price Alerts
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight mb-2">
+              Get notified when prices drop
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-md mx-auto">
+              We monitor all 12 providers and send you an email when pricing changes in your state. No spam — one email per meaningful change.
+            </p>
+          </div>
+          {/* Tally embed — replace YOUR_TALLY_FORM_ID with your real form ID */}
+          <div className="rounded-2xl overflow-hidden border bg-background shadow-sm">
+            <iframe
+              data-tally-src="https://tally.so/embed/YOUR_TALLY_FORM_ID?alignLeft=0&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+              loading="lazy"
+              width="100%"
+              height="220"
+              frameBorder={0}
+              title="GLP-1 price alert signup"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            We never sell or share your email. Unsubscribe any time.
+          </p>
+        </div>
+      </section>
+      {/* Tally embed loader — initialises dynamic height resizing */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            if (typeof Tally === 'undefined') {
+              var s = document.createElement('script');
+              s.src = 'https://tally.so/widgets/embed.js';
+              s.async = true;
+              s.onload = function() { if (typeof Tally !== 'undefined') Tally.loadEmbeds(); };
+              document.head.appendChild(s);
+            } else {
+              Tally.loadEmbeds();
+            }
+          `
+        }}
+      />
+
       {/* Trust section */}
       <section className="py-16 px-4 border-t">
         <div className="container mx-auto max-w-4xl text-center">
