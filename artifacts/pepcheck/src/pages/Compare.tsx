@@ -61,7 +61,7 @@ export default function Compare() {
     ? medicationParam
     : undefined;
 
-  const { data: rawProviders, isLoading } = useListProviders({ state: stateParam, medication: apiMedication, sort: sortParam });
+  const { data: rawProviders, isLoading } = useListProviders({ medication: apiMedication, sort: sortParam });
   const providers = (rawProviders || []) as ProviderWithExtras[];
   const trackClick = useTrackProviderClick();
 

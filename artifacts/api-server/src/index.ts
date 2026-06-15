@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { ensureSeed } from "@workspace/db";
 
 const rawPort = process.env["PORT"];
 
@@ -14,6 +15,14 @@ const port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
+
+ensureSeed()
+  .then(() => {
+    logger.info("Seed complete");
+  })
+  .catch((err) => {
+    logger.warn({ err }, "Seed failed — continuing anyway");
+  });
 
 app.listen(port, (err) => {
   if (err) {
