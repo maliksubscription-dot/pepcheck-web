@@ -37,7 +37,7 @@ export function Navbar() {
           ))}
 
           <Button asChild size="sm" className="font-semibold ml-2">
-            <Link href="/#signup">
+            <Link href="/stay-updated">
               Stay Updated <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -67,7 +67,7 @@ export function Navbar() {
             </Link>
           ))}
           <Button asChild className="w-full mt-3" onClick={() => setMobileMenuOpen(false)}>
-            <Link href="/#signup">Stay Updated</Link>
+            <Link href="/stay-updated">Stay Updated</Link>
           </Button>
         </div>
       )}

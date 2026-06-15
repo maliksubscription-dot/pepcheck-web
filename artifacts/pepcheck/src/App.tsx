@@ -17,6 +17,7 @@ import About from "@/pages/About";
 import Methodology from "@/pages/Methodology";
 import Disclaimer from "@/pages/Disclaimer";
 import HowWeVerify from "@/pages/HowWeVerify";
+import StayUpdated from "@/pages/StayUpdated";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -46,6 +47,7 @@ function Router() {
         <Route path="/methodology" component={Methodology} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/how-we-verify" component={HowWeVerify} />
+        <Route path="/stay-updated" component={StayUpdated} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
