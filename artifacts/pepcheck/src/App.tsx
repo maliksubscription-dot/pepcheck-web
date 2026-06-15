@@ -16,6 +16,7 @@ import PriceTracker from "@/pages/PriceTracker";
 import About from "@/pages/About";
 import Methodology from "@/pages/Methodology";
 import Disclaimer from "@/pages/Disclaimer";
+import HowWeVerify from "@/pages/HowWeVerify";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -44,6 +45,7 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/methodology" component={Methodology} />
         <Route path="/disclaimer" component={Disclaimer} />
+        <Route path="/how-we-verify" component={HowWeVerify} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

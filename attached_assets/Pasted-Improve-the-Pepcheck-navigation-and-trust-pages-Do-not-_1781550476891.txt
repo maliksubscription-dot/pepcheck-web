@@ -1,0 +1,128 @@
+Improve the Pepcheck navigation and trust pages.
+
+Do not redesign the whole website. Keep the current design style.
+
+Main goal:
+Make the site feel more trustworthy, Texas-focused, and ready for a public beta.
+
+1. Rename the Resources menu
+
+Replace “Resources” with:
+
+“Learn”
+
+Dropdown items should be:
+
+- Cheapest Tirzepatide in Texas
+- Cheapest Semaglutide in Texas
+- How We Verify Providers
+
+Remove or hide for now:
+
+- Price Tracker
+- Submit a Review
+
+These can come back later after we have users.
+
+2. Add a How We Verify page
+
+Create a new page called:
+
+“How We Verify Providers”
+
+URL:
+/how-we-verify
+
+Page content should explain that Pepcheck checks:
+
+- Public provider pricing
+- Texas availability
+- Consultation fees
+- Shipping information
+- Medication offerings
+- Last updated dates
+
+Add this disclaimer:
+
+“Pepcheck does not sell medication, prescribe medication, or provide medical advice. Information is for comparison purposes only and should always be verified directly with the provider before making a healthcare decision.”
+
+Add a simple section called:
+
+“What We Check”
+
+Use checkmarks:
+
+✓ Public pricing  
+✓ Texas availability  
+✓ Consultation fees  
+✓ Shipping costs  
+✓ Medication options  
+✓ Last verified date  
+
+3. Rename “By State”
+
+Since the website is currently focused only on Texas, replace:
+
+“By State”
+
+with:
+
+“Texas Beta”
+
+This should link to the Texas-focused comparison page or Texas page.
+
+4. Update navbar CTA
+
+Replace the navbar button:
+
+“Find Prices”
+
+with:
+
+“Get Texas Alerts”
+
+When clicked, it should go to the email signup/Tally form section or open the Tally form page.
+
+CTA copy should be:
+
+“Get notified when GLP-1 prices change in Texas.”
+
+If the Tally embed is already added, link directly to that section.
+
+If not, add a placeholder section with:
+
+- Email input placeholder
+- State fixed to Texas
+- Medication interest dropdown
+
+5. Add small trust text under Compare Providers
+
+On the comparison page, under the main heading or near the top, add:
+
+“8 providers • Updated June 2026 • Texas Beta”
+
+Make sure this updates cleanly if provider count changes.
+
+6. Keep the MVP focused
+
+Do not add:
+- user accounts
+- payment systems
+- review system
+- advanced price tracker
+- database integrations
+- AI chatbot
+
+Only improve:
+- navigation clarity
+- Texas beta positioning
+- trust pages
+- email CTA
+- verification explanation
+
+After completing, tell me:
+1. Which files were edited
+2. What navigation labels were changed
+3. Where the How We Verify page was added
+4. Where the Get Texas Alerts button links
+5. Anything I need to manually update

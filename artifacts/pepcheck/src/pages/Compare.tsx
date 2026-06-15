@@ -132,9 +132,9 @@ export default function Compare() {
             Compare GLP-1 Providers in Texas
           </h1>
           <p className="text-primary-foreground/75 text-sm">
-            {isLoading ? "Loading…" : `${filteredProviders.length} provider${filteredProviders.length !== 1 ? "s" : ""} available`}
+            {isLoading ? "Loading…" : `${filteredProviders.length} provider${filteredProviders.length !== 1 ? "s" : ""}`}
             {medLabel ? ` · ${medLabel}` : ""}
-            {" · "}Sorted by {sortParam === "price_asc" ? "lowest price" : sortParam === "rating_desc" ? "highest rated" : sortParam === "price_desc" ? "highest price" : "featured"}
+            {" · "}Updated June 2026 · Texas Beta
           </p>
         </div>
       </div>

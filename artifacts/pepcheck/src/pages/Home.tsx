@@ -221,7 +221,7 @@ export default function Home() {
       </section>
 
       {/* Email Signup */}
-      <section className="py-12 px-4 border-t">
+      <section id="signup" className="py-12 px-4 border-t">
         <div style={{maxWidth: "520px", margin: "0 auto", padding: "0 1rem"}}>
           <iframe
             data-tally-src="https://tally.so/embed/J9BGxo?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
