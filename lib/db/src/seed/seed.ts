@@ -47,6 +47,9 @@ async function seed() {
         pros: JSON.stringify(p.pros),
         cons: JSON.stringify(p.cons),
         pharmacyInfo: p.pharmacyInfo,
+        bestFor: p.bestFor,
+        pepcheckScore: p.pepcheckScore,
+        priceTransparency: p.priceTransparency,
       })
       .onConflictDoUpdate({
         target: providersTable.slug,
@@ -72,6 +75,9 @@ async function seed() {
           pros: JSON.stringify(p.pros),
           cons: JSON.stringify(p.cons),
           pharmacyInfo: p.pharmacyInfo,
+          bestFor: p.bestFor,
+          pepcheckScore: p.pepcheckScore,
+          priceTransparency: p.priceTransparency,
         },
       })
       .returning({ id: providersTable.id });

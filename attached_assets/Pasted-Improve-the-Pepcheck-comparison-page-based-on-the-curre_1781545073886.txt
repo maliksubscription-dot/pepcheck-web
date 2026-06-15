@@ -1,0 +1,183 @@
+Improve the Pepcheck comparison page based on the current design.
+
+Do not redesign the entire website. Keep the existing clean style, but make the comparison page clearer, faster to understand, and more focused on Texas beta users.
+
+Main goal:
+A user should be able to decide which GLP-1 provider available in Texas is best for them within 20 seconds.
+
+Changes to make:
+
+1. Add Texas beta positioning
+
+At the top of the comparison page, add a clear banner:
+
+“🇺🇸 Texas Beta — Currently comparing providers available in Texas. More states coming soon.”
+
+Change any “All States” default to:
+“Texas”
+
+If the site is currently focused only on Texas, either remove the state filter or lock it to Texas.
+
+2. Simplify the filters
+
+Keep only these filters for now:
+- Medication
+- Sort by
+- Free shipping
+- Consultation included
+
+Remove or hide:
+- All States
+- Verified only
+
+All providers shown should already be verified or marked clearly on the card.
+
+3. Improve provider cards
+
+Each provider card should be redesigned to help users decide faster.
+
+For each provider, show the following in a clear layout:
+
+- Provider name
+- Star rating
+- Pepcheck Score
+- Best for label
+- First month cost
+- Ongoing monthly cost
+- Medication offered
+- Delivery time
+- Consultation fee/included status
+- Shipping fee/free shipping status
+- Price transparency status
+- Last verified date
+- View Details button
+- Visit Provider button
+
+Example layout:
+
+Provider Name ⭐ 4.2
+
+Best for: Beginners
+
+Pepcheck Score: 8.6 / 10
+
+First month: $39
+
+Ongoing: $149/mo
+
+Medication: Semaglutide • Tirzepatide
+
+Delivery: 7 days
+
+Consultation: Included
+
+Shipping: Free
+
+Price transparency: Partial
+
+Last verified: June 15, 2026
+
+Buttons:
+View Details
+Visit Provider
+
+4. Make price more prominent
+
+The first-month cost and ongoing monthly cost should be the most visually prominent information on each card.
+
+Do not show unclear text like:
+“$ Starting $”
+
+Instead show:
+“First month: $39”
+“Ongoing: $149/mo”
+
+If a price is unknown, show:
+“Not publicly listed”
+
+5. Add “Best for” field
+
+Update the provider data model to include:
+
+bestFor
+
+Example values:
+- Beginners
+- Cheapest option
+- All-in-one program
+- Doctor-led care
+- Compounded GLP-1 option
+- Branded GLP-1 access
+
+Show this clearly on each card.
+
+6. Add Pepcheck Score
+
+Add a simple Pepcheck Score field to each provider.
+
+Use a number out of 10 for now.
+
+Example:
+pepcheckScore: 8.6
+
+Show it clearly on the card.
+
+7. Add price transparency
+
+Update provider data to include:
+
+priceTransparency
+
+Allowed values:
+- Clear
+- Partial
+- Low
+
+Display with labels:
+- Clear = total price is easy to understand
+- Partial = some costs are shown, but medication or extras may be separate
+- Low = pricing depends heavily on consultation, insurance, or pharmacy
+
+8. Improve comparison readability
+
+Reduce empty space between provider rows.
+
+Make the page feel like a decision tool, not just a directory.
+
+The user should instantly see:
+- cheapest first-month option
+- cheapest ongoing option
+- which providers include medication
+- which providers charge separately
+
+9. Keep existing buttons
+
+Keep:
+- Add to Compare
+- View Details
+- Visit Provider
+
+But make sure Visit Provider is the strongest CTA.
+
+10. Do not add complex features
+
+Do not add:
+- user accounts
+- payments
+- subscriptions
+- complex review systems
+- database integrations
+
+Only improve:
+- layout
+- filters
+- provider cards
+- Texas beta focus
+- data clarity
+
+After making changes, tell me:
+1. Which files were edited
+2. What fields were added to the provider data
+3. How the filters now work
+4. How Pepcheck Score and price transparency display
+5. What still needs manual data entry

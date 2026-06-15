@@ -400,6 +400,14 @@ components:
           description: JSON-encoded string array
         pharmacyInfo:
           type: ["string", "null"]
+        bestFor:
+          type: ["string", "null"]
+        pepcheckScore:
+          type: ["number", "null"]
+        priceTransparency:
+          type: ["string", "null"]
+        medicationsOffered:
+          type: ["string", "null"]
         lastVerified:
           type: ["string", "null"]
         createdAt:

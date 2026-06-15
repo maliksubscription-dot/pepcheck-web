@@ -135,6 +135,14 @@ export interface ProviderSeedData {
   /** Compounding pharmacy name and accreditation — shown in the Overview tab */
   pharmacyInfo: string;
 
+  // ── Pepcheck editorial ────────────────────────────────────
+  /** Short label shown on cards — e.g. "Beginners", "Cheapest option" */
+  bestFor: string;
+  /** Pepcheck editorial score out of 10 */
+  pepcheckScore: number;
+  /** Price transparency level: "Clear" | "Partial" | "Low" */
+  priceTransparency: "Clear" | "Partial" | "Low";
+
   // ── Per-vial pricing ──────────────────────────────────────
   /** All available medication vials for this provider */
   listings: ProviderListing[];
@@ -181,6 +189,9 @@ export const providers: ProviderSeedData[] = [
       "Treatment options change frequently"
     ],
     pharmacyInfo: "Provider works with licensed US pharmacies. Medication availability varies.",
+    bestFor: "Beginners",
+    pepcheckScore: 7.8,
+    priceTransparency: "Partial",
     listings: [
     { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Membership costs $39 for the first month, then $149/month. Medication is billed separately." },
     ],
@@ -220,6 +231,9 @@ export const providers: ProviderSeedData[] = [
       "Not all users will qualify for GLP-1 treatment",
     ],
     pharmacyInfo: "Prescription and dispensing depend on provider review and pharmacy availability.",
+    bestFor: "Doctor-led care",
+    pepcheckScore: 7.5,
+    priceTransparency: "Partial",
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Branded tirzepatide options such as Zepbound/Mounjaro may be available depending on eligibility and prescription." },
       { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Program starts at $75/month. Medication cost is separate." },
@@ -260,6 +274,9 @@ export const providers: ProviderSeedData[] = [
       "Pharmacy partner not pubicly listed",
     ],
     pharmacyInfo: "Licensed 503A compounding pharmacy (name not publicly disclosed)",
+    bestFor: "Compounded GLP-1",
+    pepcheckScore: 8.0,
+    priceTransparency: "Clear",
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 149, inStock: true, notes: "Month-to-month plan. Lower per-month rate on 3–6 month prepay." },
       { medicationSlug: "semaglutide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 199, inStock: true, notes: "Higher dose band. Includes free shipping." },
@@ -300,11 +317,14 @@ export const providers: ProviderSeedData[] = [
       "Not available in 9 states including LA, MS, AR",
     ],
     pharmacyInfo: "Tailor Made Compounding (503A — verify current license status)",
+    bestFor: "Cheapest option",
+    pepcheckScore: 7.0,
+    priceTransparency: "Low",
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 297, inStock: true, notes: "Weekly injectable. 45-day first shipment cadence." },
       { medicationSlug: "semaglutide", concentrationMgMl: 1, vialSizeMl: 2, pricePerVial: 149, inStock: true, notes: "Oral dissolving tablet option. 90-day supply first shipment." },
     ],
-  }
+  },
 
   // ──────────────────────────────────────────────────────────
   {
@@ -340,6 +360,9 @@ export const providers: ProviderSeedData[] = [
       "Availability depends on prescription and pharmacy stock",
     ],
     pharmacyInfo: "Medication is filled through pharmacies after provider evaluation and prescription, where appropriate.",
+    bestFor: "Insurance-friendly",
+    pepcheckScore: 7.6,
+    priceTransparency: "Low",
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "PlushCare provides GLP-1 prescription support and pharmacy price tools. Medication cost varies by pharmacy, insurance, and savings options." },
     ],
@@ -380,6 +403,9 @@ export const providers: ProviderSeedData[] = [
       "Higher barrier to entry",
     ],
     pharmacyInfo: "Licensed 503A compounding pharmacy partners (disclosed on request)",
+    bestFor: "All-in-one program",
+    pepcheckScore: 8.2,
+    priceTransparency: "Clear",
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 399, inStock: true, notes: "Premium tier. Dietitian-supported titration included." },
     { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Includes full coaching programme. 1-year commitment required." },
@@ -420,11 +446,14 @@ export const providers: ProviderSeedData[] = [
       "Not available in AK, AR, DC, DE, LA, MS, RI, VT, WV",
     ],
     pharmacyInfo: "Licensed 503A compounding pharmacy partners (name varies by state)",
+    bestFor: "Coaching included",
+    pepcheckScore: 7.9,
+    priceTransparency: "Partial",
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 159, inStock: true, notes: "Starter month pricing. Ongoing cost rises to $299/mo." },
       { medicationSlug: "semaglutide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Includes coaching and community access." },
     ],
-  }
+  },
 
   // ──────────────────────────────────────────────────────────
   {
@@ -462,6 +491,9 @@ export const providers: ProviderSeedData[] = [
 
     ],
     pharmacyInfo: "Licensed 503A compounding pharmacy partners (varies by state)",
+    bestFor: "Doctor-led care",
+    pepcheckScore: 8.1,
+    priceTransparency: "Partial",
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 349, inStock: true, notes: "Includes WW lifestyle tools and obesity medicine MD oversight." },
     { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Physician oversight included. Insurance navigation support." },

@@ -41,6 +41,9 @@ const PROVIDER_COLS = {
   pros: providersTable.pros,
   cons: providersTable.cons,
   pharmacyInfo: providersTable.pharmacyInfo,
+  bestFor: providersTable.bestFor,
+  pepcheckScore: providersTable.pepcheckScore,
+  priceTransparency: providersTable.priceTransparency,
   lastVerified: providersTable.lastVerified,
   createdAt: providersTable.createdAt,
 };
@@ -59,9 +62,11 @@ async function getProvidersWithPrices(providerIds?: number[], sort?: string) {
       ...PROVIDER_COLS,
       minPrice: sql<number | null>`min(${listingsTable.pricePerVial})`,
       maxPrice: sql<number | null>`max(${listingsTable.pricePerVial})`,
+      medicationsOffered: sql<string | null>`string_agg(DISTINCT ${medicationsTable.name}, ' • ')`,
     })
     .from(providersTable)
     .leftJoin(listingsTable, eq(listingsTable.providerId, providersTable.id))
+    .leftJoin(medicationsTable, eq(listingsTable.medicationId, medicationsTable.id))
     .$dynamic();
 
   if (providerIds && providerIds.length > 0) {
@@ -77,7 +82,8 @@ async function getProvidersWithPrices(providerIds?: number[], sort?: string) {
     providersTable.consultationIncluded, providersTable.shippingFee, providersTable.freeShipping,
     providersTable.firstMonthCost, providersTable.ongoingMonthlyCost,
     providersTable.avgDeliveryDays, providersTable.pros, providersTable.cons,
-    providersTable.pharmacyInfo, providersTable.lastVerified, providersTable.createdAt
+    providersTable.pharmacyInfo, providersTable.bestFor, providersTable.pepcheckScore,
+    providersTable.priceTransparency, providersTable.lastVerified, providersTable.createdAt
   );
 
   if (sort === "price_asc") {

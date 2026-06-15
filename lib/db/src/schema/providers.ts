@@ -30,6 +30,10 @@ export const providersTable = pgTable("providers", {
   pros: text("pros"),
   cons: text("cons"),
   pharmacyInfo: text("pharmacy_info"),
+  // Pepcheck editorial
+  bestFor: text("best_for"),
+  pepcheckScore: real("pepcheck_score"),
+  priceTransparency: text("price_transparency"),
   // Metadata
   lastVerified: timestamp("last_verified"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
