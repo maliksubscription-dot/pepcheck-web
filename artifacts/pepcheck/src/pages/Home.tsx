@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetPlatformStats, useListFeaturedProviders } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const US_STATES = [
   ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
@@ -27,6 +27,12 @@ export default function Home() {
 
   const { data: stats, isLoading: isStatsLoading } = useGetPlatformStats();
   const { data: featuredProviders, isLoading: isFeaturedLoading } = useListFeaturedProviders();
+
+  useEffect(() => {
+    if (typeof (window as any).Tally !== "undefined") {
+      (window as any).Tally.loadEmbeds();
+    }
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
