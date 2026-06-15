@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { Pill, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import { PepcheckLogo } from "@/components/PepcheckLogo";
 
 const TRUST_ITEMS = [
   "Information checked regularly",
@@ -78,9 +79,8 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="py-6 px-4 bg-muted/30">
         <div className="container mx-auto max-w-5xl flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2 font-bold text-sm text-primary">
-            <Pill className="h-4 w-4" />
-            <span>Pepcheck</span>
+          <div className="text-primary">
+            <PepcheckLogo size="sm" />
           </div>
           <p className="text-center text-xs text-muted-foreground/70 max-w-sm">
             Not medical advice. Always consult a licensed healthcare professional before starting any medication.
