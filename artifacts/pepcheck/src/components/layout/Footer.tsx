@@ -3,7 +3,7 @@ import { Pill } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-muted/40 py-12 md:py-16">
+    <footer id="footer" className="border-t bg-muted/40 py-12 md:py-16">
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
           <div className="col-span-2">

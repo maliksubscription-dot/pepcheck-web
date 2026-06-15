@@ -10,7 +10,7 @@ export function Navbar() {
   const mainLinks = [
     { href: "/compare?state=TX&sort=price_asc", label: "Compare Providers" },
     { href: "/medications", label: "Medications" },
-    { href: "/#learn", label: "Learn" },
+    { href: "/#footer", label: "Learn" },
   ];
 
   return (
