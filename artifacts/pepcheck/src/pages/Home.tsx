@@ -305,7 +305,7 @@ export default function Home() {
       </section>
 
       {/* Trust section */}
-      <section className="py-16 px-4 border-t">
+      <section id="learn" className="py-16 px-4 border-t">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-2xl font-bold mb-3">Why use Pepcheck?</h2>
           <p className="text-muted-foreground mb-10 max-w-xl mx-auto text-sm">
