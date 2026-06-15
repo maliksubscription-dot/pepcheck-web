@@ -186,6 +186,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Email Signup */}
+      <section className="py-12 px-4 border-t">
+        <div style={{maxWidth: "520px", margin: "0 auto", padding: "0 1rem"}}>
+          <iframe
+            data-tally-src="https://tally.so/embed/J9BGxo?alignLeft=1&hideTitle=0&transparentBackground=1&dynamicHeight=1"
+            loading="lazy"
+            width="100%"
+            height={400}
+            frameBorder={0}
+            marginHeight={0}
+            marginWidth={0}
+            title="Pepcheck GLP-1 Signup"
+          />
+          <script dangerouslySetInnerHTML={{__html: `
+            var d=document,w="https://tally.so/widgets/embed.js",v=function()
+            {"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};
+            if("undefined"!=typeof Tally)v();
+            else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w;s.onload=v;s.onerror=v;d.body.appendChild(s);}
+          `}} />
+        </div>
+      </section>
+
       {/* Featured Providers */}
       <section className="py-16 px-4 bg-muted/20 border-t">
         <div className="container mx-auto max-w-5xl">
