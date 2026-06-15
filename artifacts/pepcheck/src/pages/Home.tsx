@@ -29,8 +29,24 @@ export default function Home() {
   const { data: featuredProviders, isLoading: isFeaturedLoading } = useListFeaturedProviders();
 
   useEffect(() => {
+    const w = "https://tally.so/widgets/embed.js";
+    const load = () => {
+      if (typeof (window as any).Tally !== "undefined") {
+        (window as any).Tally.loadEmbeds();
+      } else {
+        document.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((el: Element) => {
+          (el as HTMLIFrameElement).src = (el as HTMLIFrameElement).dataset.tallySrc!;
+        });
+      }
+    };
     if (typeof (window as any).Tally !== "undefined") {
-      (window as any).Tally.loadEmbeds();
+      load();
+    } else if (!document.querySelector(`script[src="${w}"]`)) {
+      const s = document.createElement("script");
+      s.src = w;
+      s.onload = load;
+      s.onerror = load;
+      document.body.appendChild(s);
     }
   }, []);
 
