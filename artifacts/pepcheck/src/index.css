@@ -181,3 +181,11 @@
 .learn-target:target {
   animation: learn-highlight 1.8s ease-out forwards;
 }
+
+/* Hide Tally "Powered by Tally" branding injected by embed script */
+a[href*="tally.so/r/"],
+a[href*="tally.so?"],
+[data-testid="powered-by-tally"],
+.tally-powered-by-branding {
+  display: none !important;
+}

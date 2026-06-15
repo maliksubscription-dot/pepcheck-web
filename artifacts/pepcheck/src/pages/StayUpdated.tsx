@@ -60,7 +60,7 @@ export default function StayUpdated() {
 
       {/* Tally form */}
       <section className="py-14 px-4">
-        <div className="container mx-auto max-w-xl">
+        <div className="container mx-auto max-w-xl relative">
           <iframe
             data-tally-src="https://tally.so/embed/J9BGxo?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
             loading="lazy"
@@ -71,6 +71,17 @@ export default function StayUpdated() {
             marginWidth={0}
             title="Stay Updated — Pepcheck"
           />
+          {/* Cover Tally branding element injected at bottom-right of form */}
+          <div style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: "55%",
+            height: "56px",
+            background: "white",
+            zIndex: 10,
+            pointerEvents: "none",
+          }} />
         </div>
       </section>
     </div>
