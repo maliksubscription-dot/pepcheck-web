@@ -53,7 +53,7 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (selectedState) params.set("state", selectedState);
+    params.set("state", "TX");
     if (selectedMed && selectedMed !== "both") params.set("medication", selectedMed);
     params.set("sort", "price_asc");
     setLocation(`/compare?${params.toString()}`);
@@ -71,40 +71,29 @@ export default function Home() {
                 Vetted Providers Only
               </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
-                Find the cheapest verified GLP-1 provider in your state
+                Compare GLP-1 Providers Available in Texas
               </h1>
               <p className="text-base md:text-lg text-primary-foreground/80 max-w-md">
-                Compare prices, medication options, state availability, shipping, consultation fees, and verification status before choosing a provider.
+                Compare pricing, medications, consultation fees, shipping costs, and provider information before choosing a weight-loss program.
               </p>
 
               <form onSubmit={handleSearch} className="bg-background rounded-xl shadow-xl p-4 flex flex-col gap-3 mt-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">State</label>
-                    <Select value={selectedState} onValueChange={setSelectedState}>
-                      <SelectTrigger className="bg-muted/30 border-border text-foreground" data-testid="select-state">
-                        <SelectValue placeholder="Select your state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {US_STATES.map(([code, name]) => (
-                          <SelectItem key={code} value={code}>{name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Medication</label>
-                    <Select value={selectedMed} onValueChange={setSelectedMed}>
-                      <SelectTrigger className="bg-muted/30 border-border text-foreground" data-testid="select-medication">
-                        <SelectValue placeholder="All medications" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="both">Both (Tirzepatide & Semaglutide)</SelectItem>
-                        <SelectItem value="tirzepatide">Tirzepatide (Mounjaro / Zepbound)</SelectItem>
-                        <SelectItem value="semaglutide">Semaglutide (Ozempic / Wegovy)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="flex items-center gap-2 px-1 pb-1">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Showing providers available in <span className="text-primary">Texas</span></span>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Medication</label>
+                  <Select value={selectedMed} onValueChange={setSelectedMed}>
+                    <SelectTrigger className="bg-muted/30 border-border text-foreground" data-testid="select-medication">
+                      <SelectValue placeholder="All medications" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="both">Both (Tirzepatide & Semaglutide)</SelectItem>
+                      <SelectItem value="tirzepatide">Tirzepatide (Mounjaro / Zepbound)</SelectItem>
+                      <SelectItem value="semaglutide">Semaglutide (Ozempic / Wegovy)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button type="submit" size="lg" className="w-full font-bold text-base" data-testid="button-compare">
                   Compare Providers <ArrowRight className="ml-2 h-5 w-5" />
