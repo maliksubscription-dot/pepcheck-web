@@ -50,6 +50,8 @@ async function seed() {
         bestFor: p.bestFor,
         pepcheckScore: p.pepcheckScore,
         priceTransparency: p.priceTransparency,
+        programType: p.programType,
+        medicationIncluded: p.medicationIncluded,
       })
       .onConflictDoUpdate({
         target: providersTable.slug,
@@ -78,6 +80,8 @@ async function seed() {
           bestFor: p.bestFor,
           pepcheckScore: p.pepcheckScore,
           priceTransparency: p.priceTransparency,
+          programType: p.programType,
+          medicationIncluded: p.medicationIncluded,
         },
       })
       .returning({ id: providersTable.id });

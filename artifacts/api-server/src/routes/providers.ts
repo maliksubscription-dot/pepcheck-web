@@ -44,6 +44,8 @@ const PROVIDER_COLS = {
   bestFor: providersTable.bestFor,
   pepcheckScore: providersTable.pepcheckScore,
   priceTransparency: providersTable.priceTransparency,
+  programType: providersTable.programType,
+  medicationIncluded: providersTable.medicationIncluded,
   lastVerified: providersTable.lastVerified,
   createdAt: providersTable.createdAt,
 };
@@ -83,7 +85,8 @@ async function getProvidersWithPrices(providerIds?: number[], sort?: string) {
     providersTable.firstMonthCost, providersTable.ongoingMonthlyCost,
     providersTable.avgDeliveryDays, providersTable.pros, providersTable.cons,
     providersTable.pharmacyInfo, providersTable.bestFor, providersTable.pepcheckScore,
-    providersTable.priceTransparency, providersTable.lastVerified, providersTable.createdAt
+    providersTable.priceTransparency, providersTable.programType, providersTable.medicationIncluded,
+    providersTable.lastVerified, providersTable.createdAt
   );
 
   if (sort === "price_asc") {

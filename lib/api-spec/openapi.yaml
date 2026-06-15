@@ -406,6 +406,10 @@ components:
           type: ["number", "null"]
         priceTransparency:
           type: ["string", "null"]
+        programType:
+          type: ["string", "null"]
+        medicationIncluded:
+          type: ["boolean", "null"]
         medicationsOffered:
           type: ["string", "null"]
         lastVerified:

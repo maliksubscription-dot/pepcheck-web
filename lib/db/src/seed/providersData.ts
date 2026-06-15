@@ -142,6 +142,10 @@ export interface ProviderSeedData {
   pepcheckScore: number;
   /** Price transparency level: "Clear" | "Partial" | "Low" */
   priceTransparency: "Clear" | "Partial" | "Low";
+  /** Program category label shown on cards */
+  programType: string;
+  /** Whether medication cost is included in the monthly price */
+  medicationIncluded: boolean;
 
   // ── Per-vial pricing ──────────────────────────────────────
   /** All available medication vials for this provider */
@@ -192,8 +196,11 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Beginners",
     pepcheckScore: 7.8,
     priceTransparency: "Partial",
+    programType: "Telehealth Membership",
+    medicationIncluded: false,
     listings: [
     { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Membership costs $39 for the first month, then $149/month. Medication is billed separately." },
+    { medicationSlug: "tirzepatide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Tirzepatide access pathway available through physician network. Pricing varies." },
     ],
   },
 
@@ -234,6 +241,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Doctor-led care",
     pepcheckScore: 7.5,
     priceTransparency: "Partial",
+    programType: "Physician-Led Telehealth",
+    medicationIncluded: false,
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Branded tirzepatide options such as Zepbound/Mounjaro may be available depending on eligibility and prescription." },
       { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "Program starts at $75/month. Medication cost is separate." },
@@ -277,6 +286,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Compounded GLP-1",
     pepcheckScore: 8.0,
     priceTransparency: "Clear",
+    programType: "Compounded GLP-1 Provider",
+    medicationIncluded: true,
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 149, inStock: true, notes: "Month-to-month plan. Lower per-month rate on 3–6 month prepay." },
       { medicationSlug: "semaglutide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 199, inStock: true, notes: "Higher dose band. Includes free shipping." },
@@ -320,6 +331,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Cheapest option",
     pepcheckScore: 7.0,
     priceTransparency: "Low",
+    programType: "Compounded GLP-1 Provider",
+    medicationIncluded: true,
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 297, inStock: true, notes: "Weekly injectable. 45-day first shipment cadence." },
       { medicationSlug: "semaglutide", concentrationMgMl: 1, vialSizeMl: 2, pricePerVial: 149, inStock: true, notes: "Oral dissolving tablet option. 90-day supply first shipment." },
@@ -363,6 +376,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Insurance-friendly",
     pepcheckScore: 7.6,
     priceTransparency: "Low",
+    programType: "Care Program",
+    medicationIncluded: false,
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: null, vialSizeMl: null, pricePerVial: null, inStock: true, notes: "PlushCare provides GLP-1 prescription support and pharmacy price tools. Medication cost varies by pharmacy, insurance, and savings options." },
     ],
@@ -406,6 +421,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "All-in-one program",
     pepcheckScore: 8.2,
     priceTransparency: "Clear",
+    programType: "All-In-One GLP-1 Program",
+    medicationIncluded: true,
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 399, inStock: true, notes: "Premium tier. Dietitian-supported titration included." },
     { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Includes full coaching programme. 1-year commitment required." },
@@ -449,6 +466,8 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Coaching included",
     pepcheckScore: 7.9,
     priceTransparency: "Partial",
+    programType: "All-In-One GLP-1 Program",
+    medicationIncluded: true,
     listings: [
       { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 159, inStock: true, notes: "Starter month pricing. Ongoing cost rises to $299/mo." },
       { medicationSlug: "semaglutide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Includes coaching and community access." },
@@ -494,9 +513,11 @@ export const providers: ProviderSeedData[] = [
     bestFor: "Doctor-led care",
     pepcheckScore: 8.1,
     priceTransparency: "Partial",
+    programType: "Physician-Led Telehealth",
+    medicationIncluded: true,
     listings: [
       { medicationSlug: "tirzepatide", concentrationMgMl: 5, vialSizeMl: 2, pricePerVial: 349, inStock: true, notes: "Includes WW lifestyle tools and obesity medicine MD oversight." },
-    { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Physician oversight included. Insurance navigation support." },
+      { medicationSlug: "semaglutide", concentrationMgMl: 2.5, vialSizeMl: 2, pricePerVial: 299, inStock: true, notes: "Physician oversight included. Insurance navigation support." },
     ],
   },
-
+];

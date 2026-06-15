@@ -34,6 +34,8 @@ export const providersTable = pgTable("providers", {
   bestFor: text("best_for"),
   pepcheckScore: real("pepcheck_score"),
   priceTransparency: text("price_transparency"),
+  programType: text("program_type"),
+  medicationIncluded: boolean("medication_included").default(false),
   // Metadata
   lastVerified: timestamp("last_verified"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

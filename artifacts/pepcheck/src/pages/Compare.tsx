@@ -9,7 +9,7 @@ import type { Provider } from "@workspace/api-client-react";
 import {
   ShieldCheck, Star, ArrowLeftRight, X,
   ArrowRight, Package, Clock, DollarSign, Filter,
-  TrendingDown, Truck, MapPin,
+  TrendingDown, Truck, MapPin, Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,8 @@ type ProviderWithExtras = Provider & {
   bestFor?: string | null;
   pepcheckScore?: number | null;
   priceTransparency?: string | null;
+  programType?: string | null;
+  medicationIncluded?: boolean | null;
   medicationsOffered?: string | null;
 };
 
@@ -35,13 +37,18 @@ function transparencyBadge(level: string | null | undefined) {
   return "bg-muted text-muted-foreground";
 }
 
+function PriceCell({ value, suffix = "" }: { value: number | null | undefined; suffix?: string }) {
+  if (value == null) return <span className="text-sm text-muted-foreground font-medium">Not publicly listed</span>;
+  return <>{`$${value}${suffix}`}</>;
+}
+
 export default function Compare() {
   const [, setLocation] = useLocation();
   const searchString = useSearch();
   const searchParams = new URLSearchParams(searchString);
 
   const stateParam = "TX";
-  const medicationParam = searchParams.get("medication") || undefined;
+  const medicationParam = searchParams.get("medication") || "all";
   const sortParam = (searchParams.get("sort") as "price_asc" | "price_desc" | "rating_desc" | "featured") || "price_asc";
 
   const [selectedToCompare, setSelectedToCompare] = useState<number[]>([]);
@@ -49,9 +56,13 @@ export default function Compare() {
   const [freeShippingOnly, setFreeShippingOnly] = useState(false);
   const [consultationIncludedOnly, setConsultationIncludedOnly] = useState(false);
 
-  const { data: rawProviders, isLoading } = useListProviders({ state: stateParam, medication: medicationParam, sort: sortParam });
+  // For "both" and "all", don't pass medication to API — filter client-side
+  const apiMedication = (medicationParam && medicationParam !== "all" && medicationParam !== "both")
+    ? medicationParam
+    : undefined;
+
+  const { data: rawProviders, isLoading } = useListProviders({ state: stateParam, medication: apiMedication, sort: sortParam });
   const providers = (rawProviders || []) as ProviderWithExtras[];
-  const { data: medications } = useListMedications();
   const trackClick = useTrackProviderClick();
 
   const { data: comparisonData, isLoading: isComparisonLoading } = useCompareProviders(
@@ -62,7 +73,14 @@ export default function Compare() {
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchString);
     params.set("state", "TX");
-    if (value && value !== "all") { params.set(key, value); } else { params.delete(key); }
+    if (key === "medication") {
+      console.log("Comparison page medication filter changed:", value);
+    }
+    if (value && value !== "all") {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
     setLocation(`/compare?${params.toString()}`);
   };
 
@@ -75,19 +93,30 @@ export default function Compare() {
   };
 
   const handleVisit = (providerId: number, website?: string | null) => {
+    console.log("Visit Provider clicked:", providerId);
     trackClick.mutate({ data: { providerId, source: "compare" } });
     if (website) window.open(website, "_blank", "noopener noreferrer");
   };
 
+  const handleViewDetails = (providerId: number) => {
+    console.log("View Details clicked:", providerId);
+  };
+
   const filteredProviders = useMemo(() => {
     return providers.filter(p => {
+      const offered = (p.medicationsOffered || "").toLowerCase();
+      if (medicationParam === "tirzepatide" && !offered.includes("tirzepatide")) return false;
+      if (medicationParam === "semaglutide" && !offered.includes("semaglutide")) return false;
+      if (medicationParam === "both") {
+        if (!offered.includes("tirzepatide") || !offered.includes("semaglutide")) return false;
+      }
       if (freeShippingOnly && !p.freeShipping) return false;
       if (consultationIncludedOnly && !p.consultationIncluded) return false;
       return true;
     });
-  }, [providers, freeShippingOnly, consultationIncludedOnly]);
+  }, [providers, medicationParam, freeShippingOnly, consultationIncludedOnly]);
 
-  const medName = medicationParam ? medications?.find(m => m.slug === medicationParam)?.name || medicationParam : null;
+  const medLabel = medicationParam === "tirzepatide" ? "Tirzepatide" : medicationParam === "semaglutide" ? "Semaglutide" : medicationParam === "both" ? "Both medications" : null;
 
   return (
     <div className="w-full">
@@ -103,15 +132,15 @@ export default function Compare() {
             Compare GLP-1 Providers in Texas
           </h1>
           <p className="text-primary-foreground/75 text-sm">
-            {filteredProviders.length} provider{filteredProviders.length !== 1 ? "s" : ""} available
-            {medName ? ` · ${medName}` : ""}
+            {isLoading ? "Loading…" : `${filteredProviders.length} provider${filteredProviders.length !== 1 ? "s" : ""} available`}
+            {medLabel ? ` · ${medLabel}` : ""}
             {" · "}Sorted by {sortParam === "price_asc" ? "lowest price" : sortParam === "rating_desc" ? "highest rated" : sortParam === "price_desc" ? "highest price" : "featured"}
           </p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Compare bar */}
+        {/* Compare selection bar */}
         {selectedToCompare.length > 0 && (
           <div className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-3 flex items-center gap-4">
             <span className="text-sm font-semibold px-1">{selectedToCompare.length}/3 selected for comparison</span>
@@ -125,7 +154,7 @@ export default function Compare() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
             <Card className="sticky top-20">
               <CardContent className="p-5 space-y-5">
@@ -135,18 +164,18 @@ export default function Compare() {
 
                 <div className="flex items-center gap-2 text-sm bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
                   <MapPin className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span><span className="font-semibold text-blue-900">Texas</span> <span className="text-blue-600 text-xs">Beta</span></span>
+                  <span><span className="font-semibold text-blue-900">Texas</span> <span className="text-blue-600 text-xs font-semibold">Beta</span></span>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Medication</label>
-                  <Select value={medicationParam || "all"} onValueChange={(v) => handleFilterChange("medication", v)}>
+                  <Select value={medicationParam} onValueChange={(v) => handleFilterChange("medication", v)}>
                     <SelectTrigger className="text-sm"><SelectValue placeholder="All Medications" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Medications</SelectItem>
-                      {medications?.map(m => (
-                        <SelectItem key={m.slug} value={m.slug}>{m.name}</SelectItem>
-                      ))}
+                      <SelectItem value="tirzepatide">Tirzepatide</SelectItem>
+                      <SelectItem value="semaglutide">Semaglutide</SelectItem>
+                      <SelectItem value="both">Both (Tirzepatide & Semaglutide)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -187,28 +216,44 @@ export default function Compare() {
             </Card>
           </div>
 
-          {/* Results */}
+          {/* Provider results */}
           <div className="lg:col-span-3 space-y-3">
             {isLoading ? (
-              Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-xl" />)
+              Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-52 w-full rounded-xl" />)
             ) : filteredProviders.length === 0 ? (
-              <div className="text-center py-24 bg-muted/10 border border-dashed rounded-xl">
+              <div className="text-center py-24 bg-muted/10 border border-dashed rounded-xl px-6">
                 <TrendingDown className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-bold text-lg mb-2">No providers match your filters</h3>
-                <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">Try removing some filters.</p>
-                <Button variant="outline" onClick={() => setLocation("/compare?state=TX")}>Clear Filters</Button>
+                <h3 className="font-bold text-lg mb-2">
+                  {medicationParam && medicationParam !== "all"
+                    ? `No providers found for this medication in Texas yet.`
+                    : "No providers match your filters"}
+                </h3>
+                <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-2">
+                  {medicationParam && medicationParam !== "all"
+                    ? "We're still adding providers. Join the price alert list to get notified when new options are added."
+                    : "Try removing some filters to see more results."}
+                </p>
+                <div className="flex items-center justify-center gap-3 mt-6">
+                  <Button variant="outline" onClick={() => setLocation("/compare?state=TX&sort=price_asc")}>
+                    Clear Filters
+                  </Button>
+                  <Button asChild>
+                    <Link href="/#signup">
+                      <Bell className="w-4 h-4 mr-2" /> Get Alerts
+                    </Link>
+                  </Button>
+                </div>
               </div>
             ) : (
               filteredProviders.map((provider, idx) => (
                 <Card
                   key={provider.id}
                   className={`overflow-hidden transition-all ${selectedToCompare.includes(provider.id) ? "border-primary ring-1 ring-primary" : "hover:border-primary/40"}`}
-                  data-testid={`card-provider-${provider.id}`}
                 >
                   <CardContent className="p-0">
-                    {/* Desktop layout */}
+                    {/* Desktop */}
                     <div className="hidden md:flex">
-                      {/* Provider identity */}
+                      {/* Identity */}
                       <div className="flex-1 p-5">
                         <div className="flex items-start gap-3 mb-4">
                           <div className="w-11 h-11 rounded-xl bg-muted border flex items-center justify-center shrink-0">
@@ -221,10 +266,12 @@ export default function Compare() {
                               <h3 className="font-bold text-lg leading-tight">{provider.name}</h3>
                               {provider.verified && (
                                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
-                                  <ShieldCheck className="w-3 h-3" /> Verified
+                                  <ShieldCheck className="w-3 h-3" /> Information checked
                                 </span>
                               )}
-                              {idx === 0 && <span className="text-[11px] font-bold bg-green-100 text-green-800 px-1.5 py-0.5 rounded">BEST PRICE</span>}
+                              {idx === 0 && sortParam === "price_asc" && (
+                                <span className="text-[11px] font-bold bg-green-100 text-green-800 px-1.5 py-0.5 rounded">BEST PRICE</span>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 flex-wrap text-sm">
                               <span className="flex items-center gap-1">
@@ -232,6 +279,11 @@ export default function Compare() {
                                 <span className="font-semibold">{provider.rating?.toFixed(1) || "N/A"}</span>
                                 <span className="text-muted-foreground">({provider.reviewCount?.toLocaleString()})</span>
                               </span>
+                              {provider.programType && (
+                                <span className="bg-muted text-muted-foreground text-[11px] px-2 py-0.5 rounded-full border">
+                                  {provider.programType}
+                                </span>
+                              )}
                               {provider.bestFor && (
                                 <span className="bg-blue-100 text-blue-800 text-[11px] font-semibold px-2 py-0.5 rounded-full">
                                   {provider.bestFor}
@@ -272,13 +324,17 @@ export default function Compare() {
                           </div>
                         </div>
 
-                        {provider.medicationsOffered && (
-                          <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                            {provider.medicationsOffered.split(" • ").map(med => (
-                              <span key={med} className="bg-muted/60 text-xs font-medium px-2 py-0.5 rounded-full border">{med}</span>
-                            ))}
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 flex-wrap mb-2">
+                          {provider.medicationsOffered?.split(" • ").map(med => (
+                            <span key={med} className="bg-muted/60 text-xs font-medium px-2 py-0.5 rounded-full border">{med}</span>
+                          ))}
+                          {provider.medicationIncluded === true && (
+                            <span className="bg-green-100 text-green-800 text-[11px] font-semibold px-2 py-0.5 rounded-full">Medication included</span>
+                          )}
+                          {provider.medicationIncluded === false && (
+                            <span className="bg-orange-100 text-orange-800 text-[11px] font-semibold px-2 py-0.5 rounded-full">Medication separate</span>
+                          )}
+                        </div>
 
                         <div className="text-xs text-muted-foreground">
                           Last verified: {provider.lastVerified
@@ -287,22 +343,21 @@ export default function Compare() {
                         </div>
                       </div>
 
-                      {/* Pricing column */}
+                      {/* Pricing */}
                       <div className="w-52 border-l bg-muted/10 flex flex-col justify-center px-5 py-6 gap-4">
                         <div>
                           <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">First month</div>
                           <div className="text-3xl font-black text-primary leading-none">
-                            {provider.firstMonthCost != null
-                              ? `$${provider.firstMonthCost}`
-                              : <span className="text-sm font-semibold text-muted-foreground">Not listed</span>}
+                            <PriceCell value={provider.firstMonthCost} />
                           </div>
+                          {provider.medicationIncluded === false && provider.firstMonthCost != null && (
+                            <div className="text-[11px] text-orange-700 mt-0.5">Medication separate</div>
+                          )}
                         </div>
                         <div>
                           <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Ongoing</div>
                           <div className="text-xl font-bold text-foreground leading-none">
-                            {provider.ongoingMonthlyCost != null
-                              ? `$${provider.ongoingMonthlyCost}/mo`
-                              : <span className="text-sm font-medium text-muted-foreground">Not listed</span>}
+                            <PriceCell value={provider.ongoingMonthlyCost} suffix="/mo" />
                           </div>
                         </div>
                         {provider.pepcheckScore != null && (
@@ -316,7 +371,7 @@ export default function Compare() {
                         )}
                       </div>
 
-                      {/* CTA column */}
+                      {/* CTAs */}
                       <div className="w-44 border-l flex flex-col items-stretch justify-center gap-2.5 p-5">
                         <Button
                           variant={selectedToCompare.includes(provider.id) ? "secondary" : "outline"}
@@ -326,7 +381,7 @@ export default function Compare() {
                         >
                           {selectedToCompare.includes(provider.id) ? "✓ Selected" : "Add to Compare"}
                         </Button>
-                        <Button variant="outline" size="sm" className="w-full text-xs" asChild>
+                        <Button variant="outline" size="sm" className="w-full text-xs" asChild onClick={() => handleViewDetails(provider.id)}>
                           <Link href={`/providers/${provider.id}`}>View Details</Link>
                         </Button>
                         {provider.website && (
@@ -337,7 +392,7 @@ export default function Compare() {
                       </div>
                     </div>
 
-                    {/* Mobile layout */}
+                    {/* Mobile */}
                     <div className="flex flex-col md:hidden p-4 gap-3">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-xl bg-muted border flex items-center justify-center shrink-0">
@@ -384,12 +439,18 @@ export default function Compare() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center justify-between text-xs flex-wrap gap-2">
                         {provider.pepcheckScore != null && (
                           <span className="flex items-center gap-1">
                             <span className="text-muted-foreground">Score:</span>
                             <span className="font-black text-primary">{provider.pepcheckScore.toFixed(1)}/10</span>
                           </span>
+                        )}
+                        {provider.medicationIncluded === true && (
+                          <span className="bg-green-100 text-green-800 font-semibold px-1.5 py-0.5 rounded-full text-[11px]">Medication included</span>
+                        )}
+                        {provider.medicationIncluded === false && (
+                          <span className="bg-orange-100 text-orange-800 font-semibold px-1.5 py-0.5 rounded-full text-[11px]">Medication separate</span>
                         )}
                         {provider.priceTransparency && (
                           <span className={`font-semibold px-1.5 py-0.5 rounded text-[11px] ${transparencyBadge(provider.priceTransparency)}`}>
@@ -402,7 +463,7 @@ export default function Compare() {
                         <Button variant={selectedToCompare.includes(provider.id) ? "secondary" : "outline"} size="sm" className="flex-1 text-xs" onClick={() => toggleCompare(provider.id)}>
                           {selectedToCompare.includes(provider.id) ? "✓" : "Compare"}
                         </Button>
-                        <Button size="sm" variant="outline" className="flex-1 text-xs" asChild>
+                        <Button size="sm" variant="outline" className="flex-1 text-xs" asChild onClick={() => handleViewDetails(provider.id)}>
                           <Link href={`/providers/${provider.id}`}>Details</Link>
                         </Button>
                         {provider.website && (
@@ -415,6 +476,12 @@ export default function Compare() {
                   </CardContent>
                 </Card>
               ))
+            )}
+
+            {filteredProviders.length > 0 && (
+              <p className="text-xs text-muted-foreground text-center pt-2 px-4">
+                Pepcheck does not sell medication or provide medical advice. Information should be verified directly with the provider. Medication availability varies.
+              </p>
             )}
           </div>
         </div>
@@ -449,7 +516,7 @@ export default function Compare() {
                               {p.rating?.toFixed(1) || "N/A"}
                             </div>
                             <div className="flex flex-col gap-1 w-full mt-1">
-                              <Button size="sm" className="w-full text-xs" onClick={() => { setIsCompareMode(false); setLocation(`/providers/${p.id}`); }}>View Details</Button>
+                              <Button size="sm" className="w-full text-xs" onClick={() => { setIsCompareMode(false); handleViewDetails(p.id); setLocation(`/providers/${p.id}`); }}>View Details</Button>
                               {p.website && <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => { handleVisit(p.id, p.website); setIsCompareMode(false); }}>Visit Provider</Button>}
                             </div>
                           </div>
@@ -459,8 +526,8 @@ export default function Compare() {
                   </TableHeader>
                   <TableBody>
                     {[
-                      { label: "First Month", render: (p: typeof comparisonData[0]) => <span className="text-xl font-black text-primary">{p.firstMonthCost != null ? `$${p.firstMonthCost}` : "Not listed"}</span> },
-                      { label: "Ongoing/mo", render: (p: typeof comparisonData[0]) => <span className="font-bold">{p.ongoingMonthlyCost != null ? `$${p.ongoingMonthlyCost}` : "Not listed"}</span> },
+                      { label: "First Month", render: (p: typeof comparisonData[0]) => <span className="text-xl font-black text-primary">{p.firstMonthCost != null ? `$${p.firstMonthCost}` : "Not publicly listed"}</span> },
+                      { label: "Ongoing/mo", render: (p: typeof comparisonData[0]) => <span className="font-bold">{p.ongoingMonthlyCost != null ? `$${p.ongoingMonthlyCost}` : "Not publicly listed"}</span> },
                       { label: "Consultation", render: (p: typeof comparisonData[0]) => p.consultationIncluded ? <span className="text-green-600 font-semibold">Included ✓</span> : p.consultationFee != null ? `$${p.consultationFee}` : "—" },
                       { label: "Shipping", render: (p: typeof comparisonData[0]) => p.freeShipping ? <span className="text-green-600 font-semibold">Free ✓</span> : p.shippingFee != null ? `$${p.shippingFee}` : "—" },
                       { label: "Delivery", render: (p: typeof comparisonData[0]) => p.avgDeliveryDays ? `${p.avgDeliveryDays} days` : "—" },

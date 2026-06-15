@@ -1,31 +1,46 @@
 import { Link, useLocation } from "wouter";
-import { Search, Pill, Activity, ShieldCheck, ArrowRight, Star, TrendingDown, MapPin, Package } from "lucide-react";
+import { Search, Pill, Activity, ShieldCheck, ArrowRight, Star, TrendingDown, MapPin, Package, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useGetPlatformStats, useListFeaturedProviders } from "@workspace/api-client-react";
+import { useListFeaturedProviders } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
-const US_STATES = [
-  ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
-  ["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["FL","Florida"],["GA","Georgia"],
-  ["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],
-  ["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],
-  ["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],["MO","Missouri"],
-  ["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],["NJ","New Jersey"],
-  ["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],
-  ["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],
-  ["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],["VT","Vermont"],
-  ["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"],
+const HERO_CARDS = {
+  default: [
+    { name: "Hims & Hers", med: "Semaglutide", priceLabel: "Membership $39 first month", note: "then $149/mo · Medication separate" },
+    { name: "Ro Body", med: "Semaglutide", priceLabel: "From $149/mo", note: "Medication included" },
+    { name: "Calibrate", med: "Tirzepatide + Semaglutide", priceLabel: "From $299/mo", note: "Coaching + medication included" },
+  ],
+  tirzepatide: [
+    { name: "LifeMD", med: "Tirzepatide", priceLabel: "From $75", note: "Medication separate" },
+    { name: "Calibrate", med: "Tirzepatide", priceLabel: "From $299/mo", note: "Medication included" },
+    { name: "Sequence", med: "Tirzepatide", priceLabel: "From $299/mo", note: "Physician-led · Medication included" },
+  ],
+  semaglutide: [
+    { name: "Ro Body", med: "Semaglutide", priceLabel: "From $149/mo", note: "Medication included" },
+    { name: "Henry Meds", med: "Semaglutide", priceLabel: "From $149/mo", note: "Medication included" },
+    { name: "Hims & Hers", med: "Semaglutide", priceLabel: "Membership $39 first month", note: "then $149/mo · Medication separate" },
+  ],
+  both: [
+    { name: "LifeMD", med: "Tirzepatide + Semaglutide", priceLabel: "From $75", note: "Medication separate" },
+    { name: "Calibrate", med: "Tirzepatide + Semaglutide", priceLabel: "From $299/mo", note: "Medication included" },
+    { name: "Sequence", med: "Tirzepatide + Semaglutide", priceLabel: "From $299/mo", note: "Physician-led" },
+  ],
+};
+
+const TRUST_ITEMS = [
+  "Texas availability checked",
+  "Pricing reviewed regularly",
+  "No medical advice provided",
+  "Information updated monthly",
 ];
 
 export default function Home() {
   const [, setLocation] = useLocation();
-  const [selectedState, setSelectedState] = useState("");
   const [selectedMed, setSelectedMed] = useState("");
 
-  const { data: stats, isLoading: isStatsLoading } = useGetPlatformStats();
   const { data: featuredProviders, isLoading: isFeaturedLoading } = useListFeaturedProviders();
 
   useEffect(() => {
@@ -50,11 +65,21 @@ export default function Home() {
     }
   }, []);
 
+  const heroCards = useMemo(() => {
+    return HERO_CARDS[selectedMed as keyof typeof HERO_CARDS] || HERO_CARDS.default;
+  }, [selectedMed]);
+
+  const handleMedChange = (val: string) => {
+    console.log("Medication filter selected:", val || "all");
+    setSelectedMed(val);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Compare Texas Providers clicked, medication:", selectedMed || "all");
     const params = new URLSearchParams();
     params.set("state", "TX");
-    if (selectedMed && selectedMed !== "both") params.set("medication", selectedMed);
+    if (selectedMed && selectedMed !== "all") params.set("medication", selectedMed);
     params.set("sort", "price_asc");
     setLocation(`/compare?${params.toString()}`);
   };
@@ -68,13 +93,13 @@ export default function Home() {
             <div className="flex flex-col gap-6">
               <div className="inline-flex items-center gap-2 bg-primary-foreground/10 px-3 py-1.5 rounded-full w-fit text-sm font-medium border border-primary-foreground/20">
                 <ShieldCheck className="w-4 h-4" />
-                Vetted Providers Only
+                Texas Beta • Provider information checked regularly
               </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
                 Compare GLP-1 Providers Available in Texas
               </h1>
               <p className="text-base md:text-lg text-primary-foreground/80 max-w-md">
-                Compare pricing, medications, consultation fees, shipping costs, and provider information before choosing a weight-loss program.
+                Compare real monthly costs, medication options, consultation fees, shipping costs, and provider details before choosing a GLP-1 weight-loss program in Texas.
               </p>
 
               <form onSubmit={handleSearch} className="bg-background rounded-xl shadow-xl p-4 flex flex-col gap-3 mt-2">
@@ -83,41 +108,45 @@ export default function Home() {
                   <span className="text-sm font-semibold text-foreground">Showing providers available in <span className="text-primary">Texas</span></span>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Medication</label>
-                  <Select value={selectedMed} onValueChange={setSelectedMed}>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+                    Choose a medication to compare providers available in Texas.
+                  </label>
+                  <Select value={selectedMed} onValueChange={handleMedChange}>
                     <SelectTrigger className="bg-muted/30 border-border text-foreground" data-testid="select-medication">
                       <SelectValue placeholder="All medications" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="both">Both (Tirzepatide & Semaglutide)</SelectItem>
                       <SelectItem value="tirzepatide">Tirzepatide (Mounjaro / Zepbound)</SelectItem>
                       <SelectItem value="semaglutide">Semaglutide (Ozempic / Wegovy)</SelectItem>
+                      <SelectItem value="both">Both (Tirzepatide & Semaglutide)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <Button type="submit" size="lg" className="w-full font-bold text-base" data-testid="button-compare">
-                  Compare Providers <ArrowRight className="ml-2 h-5 w-5" />
+                  Compare Texas Providers <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </form>
 
-              <div className="flex flex-wrap gap-3 text-xs text-primary-foreground/70">
-                <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> 100% free to use</span>
-                <span className="flex items-center gap-1"><Package className="w-3 h-3" /> No signup required</span>
-                <span className="flex items-center gap-1"><TrendingDown className="w-3 h-3" /> Prices updated regularly</span>
-              </div>
+                <div className="grid grid-cols-2 gap-1 pt-1 border-t">
+                  {TRUST_ITEMS.map(item => (
+                    <span key={item} className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <CheckCircle className="w-3 h-3 text-green-600 shrink-0" /> {item}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-[11px] text-muted-foreground text-center border-t pt-2 leading-relaxed">
+                  Pepcheck does not sell medication or provide medical advice. Information should always be verified directly with the provider.
+                </p>
+              </form>
             </div>
 
-            {/* Hero visual */}
+            {/* Hero preview cards */}
             <div className="hidden md:block">
               <div className="relative w-full max-w-md mx-auto">
                 <div className="absolute inset-0 bg-primary-foreground/5 rounded-[2rem] transform rotate-6 border border-primary-foreground/10" />
                 <div className="absolute inset-0 bg-primary-foreground/10 rounded-[2rem] transform -rotate-2 border border-primary-foreground/20" />
                 <div className="relative bg-primary-foreground/10 rounded-[2rem] border border-primary-foreground/20 p-6 space-y-3">
-                  {[
-                    { name: "Hims & Hers", med: "Tirzepatide", price: "$249", badge: "LOWEST" },
-                    { name: "Henry Meds", med: "Tirzepatide", price: "$299", badge: null },
-                    { name: "Ro Body", med: "Semaglutide", price: "$199", badge: null },
-                  ].map((p, i) => (
+                  {heroCards.map((p, i) => (
                     <div key={i} className="bg-background rounded-xl p-4 shadow-lg flex items-center justify-between text-foreground">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -128,16 +157,14 @@ export default function Home() {
                           <div className="text-xs text-muted-foreground">{p.med}</div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {p.badge && (
-                          <span className="text-[10px] font-bold bg-green-100 text-green-800 px-1.5 py-0.5 rounded">{p.badge}</span>
-                        )}
-                        <div className="font-black text-primary">{p.price}/mo</div>
+                      <div className="text-right">
+                        <div className="font-bold text-sm text-primary leading-tight">{p.priceLabel}</div>
+                        <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">{p.note}</div>
                       </div>
                     </div>
                   ))}
                   <div className="text-center text-xs text-primary-foreground/60 pt-2">
-                    + {(stats?.totalProviders || 12) - 3} more providers
+                    + 5 more Texas providers
                   </div>
                 </div>
               </div>
@@ -146,22 +173,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Platform Stats */}
+      {/* Platform Stats — static for Texas beta */}
       <section className="py-10 bg-muted/30 border-b">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { val: isStatsLoading ? null : stats?.verifiedProviders, label: "Vetted Providers" },
-              { val: isStatsLoading ? null : stats?.statesCovered, label: "States Covered" },
-              { val: isStatsLoading ? null : `$${Math.round(stats?.avgPricePerVial || 0)}`, label: "Avg Price/Vial" },
-              { val: isStatsLoading ? null : stats?.totalReviews, label: "Patient Reviews" },
+              { val: "8", label: "Providers Compared" },
+              { val: "1", label: "State Covered" },
+              { val: "Jun 2026", label: "Last Updated" },
+              { val: "100%", label: "Texas Focused" },
             ].map(({ val, label }) => (
               <div key={label} className="flex flex-col items-center text-center gap-1">
-                {val === null ? (
-                  <Skeleton className="h-9 w-20 mb-1" />
-                ) : (
-                  <div className="text-3xl font-black text-primary">{val}</div>
-                )}
+                <div className="text-3xl font-black text-primary">{val}</div>
                 <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</div>
               </div>
             ))}
@@ -175,9 +198,9 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-10 tracking-tight">Find your provider in 30 seconds</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: MapPin, step: "1", title: "Select your state & medication", desc: "Tell us where you live and which GLP-1 medication you need. We filter out providers that can't legally ship to you." },
-              { icon: TrendingDown, step: "2", title: "Compare prices side by side", desc: "See starting price, shipping, consultation fees, delivery time, and verification status at a glance." },
-              { icon: Star, step: "3", title: "Click through to your provider", desc: "Read full provider profiles, patient reviews, and click directly to the provider's site to get started." },
+              { icon: MapPin, step: "1", title: "Select your medication", desc: "Tell us which GLP-1 medication you're looking for. We filter out providers that don't offer it in Texas." },
+              { icon: TrendingDown, step: "2", title: "Compare costs side by side", desc: "See first-month cost, ongoing fees, consultation, shipping, delivery time, and price transparency at a glance." },
+              { icon: Star, step: "3", title: "Click through to your provider", desc: "Read full provider profiles and click directly to the provider's site. Information should be verified with the provider." },
             ].map(({ icon: Icon, step, title, desc }) => (
               <div key={step} className="flex flex-col items-center text-center">
                 <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center mb-5 shadow-md relative">
@@ -191,7 +214,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-10">
             <Button asChild size="lg" className="font-semibold">
-              <Link href="/compare">Start Comparing <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/compare?state=TX&sort=price_asc">Compare Texas Providers <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
@@ -219,10 +242,10 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Featured Providers</h2>
-              <p className="text-muted-foreground text-sm mt-1">Independently verified telehealth providers offering compounded GLP-1 medications.</p>
+              <p className="text-muted-foreground text-sm mt-1">Telehealth providers offering GLP-1 medications available in Texas. Details reviewed regularly.</p>
             </div>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/compare">View All <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Link href="/compare?state=TX&sort=price_asc">View All <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
           </div>
 
@@ -242,7 +265,7 @@ export default function Home() {
                       <div className="flex flex-col items-end gap-1">
                         {provider.verified && (
                           <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3" /> Verified
+                            <ShieldCheck className="w-3 h-3" /> Information checked
                           </span>
                         )}
                         {provider.freeShipping && (
@@ -267,10 +290,11 @@ export default function Home() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="text-sm">
-                          From <span className="text-xl font-black text-primary">${provider.minPrice}</span>
-                          <span className="text-muted-foreground text-xs">/vial</span>
+                          {provider.firstMonthCost != null
+                            ? <>From <span className="text-xl font-black text-primary">${provider.firstMonthCost}</span> <span className="text-muted-foreground text-xs">first month</span></>
+                            : <span className="text-muted-foreground text-sm">Price varies</span>}
                         </div>
-                        <span className="text-xs text-muted-foreground">{provider.statesAvailable} states</span>
+                        <span className="text-xs text-muted-foreground">Available in TX</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -280,72 +304,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============================================================
-           TALLY.SO EMAIL SIGNUP FORM
-           Collects email + medication interest from homepage visitors.
-
-           TO ACTIVATE: Replace YOUR_TALLY_FORM_ID in the src URL below
-           with your real Tally form ID.
-           Find it in: tally.so → your form → Share → Embed → the ID
-           in the URL (e.g. https://tally.so/embed/wA1bc2 → ID is wA1bc2)
-           ============================================================ */}
-      <section className="py-16 px-4 bg-primary/5 border-t border-b">
-        <div className="container mx-auto max-w-2xl text-center">
-          <div className="mb-6">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full mb-4">
-              Free Price Alerts
-            </span>
-            <h2 className="text-2xl font-bold tracking-tight mb-2">
-              Get notified when prices drop
-            </h2>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              We monitor all 12 providers and send you an email when pricing changes in your state. No spam — one email per meaningful change.
-            </p>
-          </div>
-          {/* Tally embed — replace YOUR_TALLY_FORM_ID with your real form ID */}
-          <div className="rounded-2xl overflow-hidden border bg-background shadow-sm">
-            <iframe
-              data-tally-src="https://tally.so/embed/YOUR_TALLY_FORM_ID?alignLeft=0&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-              loading="lazy"
-              width="100%"
-              height="220"
-              frameBorder={0}
-              title="GLP-1 price alert signup"
-            />
-          </div>
-          <p className="text-xs text-muted-foreground mt-3">
-            We never sell or share your email. Unsubscribe any time.
-          </p>
-        </div>
-      </section>
-      {/* Tally embed loader — initialises dynamic height resizing */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            if (typeof Tally === 'undefined') {
-              var s = document.createElement('script');
-              s.src = 'https://tally.so/widgets/embed.js';
-              s.async = true;
-              s.onload = function() { if (typeof Tally !== 'undefined') Tally.loadEmbeds(); };
-              document.head.appendChild(s);
-            } else {
-              Tally.loadEmbeds();
-            }
-          `
-        }}
-      />
-
       {/* Trust section */}
       <section className="py-16 px-4 border-t">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-2xl font-bold mb-3">Why trust Pepcheck?</h2>
-          <p className="text-muted-foreground mb-10 max-w-xl mx-auto text-sm">Every provider on Pepcheck is independently researched before listing. We verify licensing, compounding pharmacy credentials, and pricing accuracy on an ongoing basis.</p>
+          <h2 className="text-2xl font-bold mb-3">Why use Pepcheck?</h2>
+          <p className="text-muted-foreground mb-10 max-w-xl mx-auto text-sm">
+            Pepcheck independently researches GLP-1 telehealth providers and compiles pricing, availability, and program details in one place. We do not sell medication or provide medical advice.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: ShieldCheck, label: "Price Verified", desc: "Prices confirmed directly from provider sites" },
-              { icon: Search, label: "State Availability", desc: "Shipping legality checked per state" },
-              { icon: Package, label: "Pharmacy Vetted", desc: "Compounding pharmacy credentials reviewed" },
-              { icon: Activity, label: "Regularly Updated", desc: "Data refreshed when changes are detected" },
+              { icon: ShieldCheck, label: "Pricing Reviewed", desc: "Prices confirmed from provider sites and updated regularly" },
+              { icon: Search, label: "Texas Availability", desc: "Provider availability in Texas checked on an ongoing basis" },
+              { icon: Package, label: "Program Details", desc: "Medication type, consultation, and shipping details reviewed" },
+              { icon: Activity, label: "Regularly Updated", desc: "Information refreshed when provider changes are detected" },
             ].map(({ icon: Icon, label, desc }) => (
               <div key={label} className="flex flex-col items-center text-center gap-2">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">

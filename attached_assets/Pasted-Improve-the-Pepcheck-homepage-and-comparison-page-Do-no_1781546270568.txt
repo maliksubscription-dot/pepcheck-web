@@ -1,0 +1,316 @@
+Improve the Pepcheck homepage and comparison page.
+
+Do not redesign the entire website. Keep the current clean teal/healthcare style, but improve accuracy, medication filtering, trust, and decision-making speed.
+
+Main goal:
+Pepcheck should help users compare GLP-1 providers available in Texas and filter results by medication type.
+
+CURRENT POSITIONING
+
+The site is currently focused on Texas only.
+
+Use this main homepage heading:
+
+“Compare GLP-1 Providers Available in Texas”
+
+Use this subheading:
+
+“Compare real monthly costs, medication options, consultation fees, shipping costs, and provider details before choosing a GLP-1 weight-loss program in Texas.”
+
+Replace “Vetted Providers Only” with:
+
+“Texas Beta • Provider information checked regularly”
+
+Add a small disclaimer under the hero/search area:
+
+“Pepcheck does not sell medication or provide medical advice. Information should always be verified directly with the provider.”
+
+Add a trust strip under the medication selector:
+
+✓ Texas availability checked  
+✓ Pricing reviewed regularly  
+✓ No medical advice provided  
+✓ Information updated monthly  
+
+HERO PREVIEW CARD FIXES
+
+The provider preview card on the right currently shows prices like $249/mo, $299/mo, etc.
+
+Do not show misleading fixed monthly prices unless medication is actually included and the cost has been verified.
+
+Instead, show safer labels such as:
+
+- “From $299/mo”
+- “Membership $149/mo”
+- “Medication separate”
+- “Price varies”
+
+For Hims specifically, display:
+
+“Hims & Hers”
+“Membership $39 first month”
+“Then $149/mo”
+“Medication separate”
+
+Remove or replace any misleading pricing text.
+
+STATS SECTION FIXES
+
+Remove this stat if it exists:
+
+“$0 Avg Price/Vial”
+
+Replace the bottom stats with:
+
+- 8 Providers Compared
+- 1 State Covered
+- Updated June 2026
+- 100% Texas Focused
+
+MEDICATION FILTERING FEATURE
+
+Add medication-specific filtering and navigation.
+
+Medication options:
+- All medications
+- Tirzepatide
+- Semaglutide
+- Both Tirzepatide & Semaglutide
+
+Required behaviour:
+
+1. Homepage medication selector
+
+When the user selects a medication from the homepage dropdown and clicks the main CTA button, route them to the comparison page with that medication filter already applied.
+
+Examples:
+- Selecting “Tirzepatide” opens /compare?state=texas&medication=tirzepatide
+- Selecting “Semaglutide” opens /compare?state=texas&medication=semaglutide
+- Selecting “Both Tirzepatide & Semaglutide” opens /compare?state=texas&medication=both
+- Selecting “All medications” opens /compare?state=texas&medication=all
+
+Update homepage CTA button text to:
+
+“Compare Texas Providers”
+
+Supporting text near selector:
+
+“Choose a medication to compare providers available in Texas.”
+
+2. Comparison page filter sync
+
+On the comparison page, read the medication value from the URL query parameter.
+
+If URL is:
+/compare?state=texas&medication=tirzepatide
+
+Then:
+- Medication dropdown should show “Tirzepatide”
+- Only providers offering Tirzepatide should appear
+
+If URL is:
+/compare?state=texas&medication=semaglutide
+
+Then:
+- Medication dropdown should show “Semaglutide”
+- Only providers offering Semaglutide should appear
+
+If URL is:
+/compare?state=texas&medication=both
+
+Then:
+- Only providers offering both Tirzepatide and Semaglutide should appear
+
+If URL is:
+/compare?state=texas&medication=all
+
+Then:
+- Show all Texas-available providers
+
+3. Update URL when filter changes
+
+When the user changes the medication dropdown on the comparison page, update the results instantly and update the URL query parameter without breaking the page.
+
+4. Provider data filtering logic
+
+Use the provider data field:
+
+medications: ["Tirzepatide", "Semaglutide"]
+
+Filtering rules:
+- tirzepatide = medications includes "Tirzepatide"
+- semaglutide = medications includes "Semaglutide"
+- both = medications includes both "Tirzepatide" and "Semaglutide"
+- all = show all Texas-available providers
+
+5. Preserve existing filters
+
+Medication filtering must work together with:
+- Free shipping
+- Consultation included
+- Sort by price
+- Sort by rating
+- Sort by delivery time if it exists
+
+Do not break existing filters.
+
+6. Empty state
+
+If no providers match the selected medication, show:
+
+“No providers found for this medication in Texas yet.”
+
+Then show:
+
+“We’re still adding providers. Join the price alert list to get notified when new options are added.”
+
+Add a button:
+“Get Alerts”
+
+7. Hero preview card reacts to medication
+
+If possible, update the hero preview card to show providers matching the selected medication.
+
+Examples:
+- Tirzepatide selected → show top Tirzepatide providers
+- Semaglutide selected → show top Semaglutide providers
+- All medications selected → show general top providers
+
+If this is too complex, keep the preview static, but make sure the comparison page filtering works properly.
+
+PROVIDER DATA ACCURACY
+
+Add or support these fields in provider data if they do not already exist:
+
+programType
+priceTransparency
+medicationIncluded
+bestFor
+pepcheckScore
+
+Example values:
+
+programType:
+- “Telehealth Membership”
+- “Compounded GLP-1 Provider”
+- “Physician-Led Telehealth”
+- “All-In-One GLP-1 Program”
+- “Care Program”
+
+priceTransparency:
+- “Clear”
+- “Partial”
+- “Low”
+
+medicationIncluded:
+true or false
+
+bestFor examples:
+- “Beginners”
+- “Cheapest option”
+- “Doctor-led care”
+- “Compounded GLP-1 option”
+- “Branded GLP-1 access”
+- “All-in-one program”
+
+pepcheckScore:
+number out of 10, for example 8.6
+
+For Hims specifically, make sure the data reflects:
+
+- Offers access pathways for Semaglutide and Tirzepatide
+- Membership is $39 first month, then $149/month
+- Medication cost is not included
+- Price transparency should be “Partial”
+- Program type should be “Telehealth Membership”
+- Medication included should be false
+
+Do not show vial concentration for providers where vial/concentration data is unknown.
+
+COMPARISON PAGE CARD IMPROVEMENTS
+
+Each provider card should clearly show:
+
+- Provider name
+- Star rating
+- Pepcheck Score
+- Best for label
+- Program type
+- First month cost
+- Ongoing monthly cost
+- Medication offered
+- Whether medication is included
+- Delivery time
+- Consultation fee/included status
+- Shipping fee/free shipping status
+- Price transparency status
+- Last verified date
+- View Details button
+- Visit Provider button
+
+Make first-month cost and ongoing monthly cost visually prominent.
+
+If a price is unknown, show:
+
+“Not publicly listed”
+
+If medication cost is separate, show:
+
+“Medication separate”
+
+Do not show confusing text like:
+
+“$ Starting $”
+
+TRACKING
+
+Add simple console tracking for:
+
+- Homepage medication selection
+- Compare Texas Providers button click
+- Comparison page medication filter changed
+- Visit Provider click
+- View Details click
+
+Example:
+console.log("Medication filter selected:", medication)
+
+IMPORTANT SAFETY COPY
+
+Avoid strong claims like:
+- “Legal provider”
+- “Approved provider”
+- “Best provider”
+
+Use safer wording:
+- “Available in Texas”
+- “Information checked”
+- “Last verified”
+- “Provider details reviewed”
+- “Medication availability varies”
+
+DO NOT BUILD
+
+Do not add:
+- user accounts
+- payments
+- subscriptions
+- complex review systems
+- database integrations
+
+Only improve:
+- homepage accuracy
+- medication filtering
+- comparison page URL query filters
+- provider card clarity
+- trust/disclaimer copy
+- Texas beta positioning
+
+After completion, tell me:
+1. Which files were changed
+2. What fields were added to the provider data
+3. How the medication filter works
+4. What query parameters were added
+5. How to test Tirzepatide filtering
+6. How to test Semaglutide filtering
+7. What provider data still needs manual checking
