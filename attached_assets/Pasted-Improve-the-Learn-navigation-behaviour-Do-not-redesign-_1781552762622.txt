@@ -1,0 +1,139 @@
+Improve the "Learn" navigation behaviour.
+
+Do not redesign the website.
+
+Current behaviour:
+The navigation contains a "Learn" item.
+
+New behaviour:
+When a user clicks "Learn", smoothly scroll them to the knowledge section near the bottom of the homepage where the categories are:
+
+* Compare
+* Explore
+* About
+
+This footer section should become the main information hub for users.
+
+Requirements:
+
+1. Add a section ID
+
+Give the entire bottom information section an ID.
+
+Use:
+
+id="learn-section"
+
+This should include:
+
+* Featured Providers
+* Why use Pepcheck?
+* Compare
+* Explore
+* About
+
+2. Make "Learn" a smooth scroll anchor
+
+When users click "Learn" in the navbar:
+
+Smoothly scroll to:
+
+#learn-section
+
+Do not navigate to another page.
+
+Use smooth scrolling.
+
+3. Highlight the section when arriving
+
+When the user arrives at the section:
+
+* Slightly animate or fade in the section
+* Or briefly add a subtle teal highlight effect
+
+Do not overdo animations.
+
+Keep it professional.
+
+4. Improve section headings
+
+Current columns:
+
+Compare
+Explore
+About
+
+Keep these, but improve the content.
+
+Compare:
+
+* Compare All Providers
+* Cheapest Tirzepatide in Texas
+* Cheapest Semaglutide in Texas
+
+Explore:
+
+* Texas Beta
+* Medication Guide
+* How We Verify Providers
+
+About:
+
+* About Pepcheck
+* Our Methodology
+* Disclaimer
+
+5. Make each item clickable
+
+Each item should route to its respective page or anchor section.
+
+6. Add a title above the entire section
+
+Add:
+
+“Learn More About Pepcheck”
+
+Subheading:
+
+“Understand how we compare providers, review pricing, and organise GLP-1 information available in Texas.”
+
+7. Add a small trust line
+
+Under the subheading, add:
+
+✓ Information checked regularly
+
+✓ Texas availability reviewed
+
+✓ No medical advice provided
+
+✓ Provider details updated monthly
+
+8. Keep the design minimal
+
+Do not redesign the entire footer.
+
+Do not make it look busy.
+
+Keep:
+
+* White background
+* Existing icons
+* Existing spacing
+* Existing colour palette
+
+9. Do not create a separate Learn page
+
+The Learn navigation should always scroll to the homepage information hub.
+
+10. After implementation, tell me:
+
+11. Which file was changed
+
+12. Which section received the ID
+
+13. How smooth scrolling was implemented
+
+14. Which footer items are clickable
+
+15. How to add new Learn links in the future

@@ -237,7 +237,7 @@ export default function Home() {
       </section>
 
       {/* Featured Providers */}
-      <section className="py-16 px-4 bg-muted/20 border-t">
+      <section id="learn-section" className="py-16 px-4 bg-muted/20 border-t learn-target">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
@@ -305,7 +305,7 @@ export default function Home() {
       </section>
 
       {/* Trust section */}
-      <section id="learn" className="py-16 px-4 border-t">
+      <section className="py-16 px-4 border-t">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-2xl font-bold mb-3">Why use Pepcheck?</h2>
           <p className="text-muted-foreground mb-10 max-w-xl mx-auto text-sm">
