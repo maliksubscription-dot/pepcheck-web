@@ -71,12 +71,12 @@ export default function StayUpdated() {
             marginWidth={0}
             title="Stay Updated — Pepcheck"
           />
-          {/* Block Tally branding — covers full bottom on form and thank-you screens */}
+          {/* Block Tally branding — right side only so submit button stays accessible */}
           <div style={{
             position: "absolute",
             bottom: 0,
-            left: 0,
             right: 0,
+            width: "58%",
             height: "64px",
             background: "white",
             zIndex: 10,
