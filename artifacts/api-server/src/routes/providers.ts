@@ -90,9 +90,9 @@ async function getProvidersWithPrices(providerIds?: number[], sort?: string) {
   );
 
   if (sort === "price_asc") {
-    q = q.orderBy(asc(sql`min(${listingsTable.pricePerVial})`));
+    q = q.orderBy(sql`${providersTable.firstMonthCost} ASC NULLS LAST`, sql`${providersTable.ongoingMonthlyCost} ASC NULLS LAST`);
   } else if (sort === "price_desc") {
-    q = q.orderBy(desc(sql`max(${listingsTable.pricePerVial})`));
+    q = q.orderBy(sql`${providersTable.firstMonthCost} DESC NULLS LAST`, sql`${providersTable.ongoingMonthlyCost} DESC NULLS LAST`);
   } else if (sort === "rating_desc") {
     q = q.orderBy(desc(providersTable.rating));
   } else {
