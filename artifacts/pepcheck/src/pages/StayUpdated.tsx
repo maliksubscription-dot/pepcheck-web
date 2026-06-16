@@ -71,16 +71,15 @@ export default function StayUpdated() {
             marginWidth={0}
             title="Stay Updated — Pepcheck"
           />
-          {/* Cover Tally branding element injected at bottom-right of form */}
+          {/* Block Tally branding — covers full bottom on form and thank-you screens */}
           <div style={{
             position: "absolute",
             bottom: 0,
+            left: 0,
             right: 0,
-            width: "55%",
-            height: "56px",
+            height: "64px",
             background: "white",
             zIndex: 10,
-            pointerEvents: "none",
           }} />
         </div>
       </section>
