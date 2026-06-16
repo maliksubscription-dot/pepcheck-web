@@ -8,10 +8,13 @@ export const reviewsTable = pgTable("reviews", {
   providerId: integer("provider_id").notNull().references(() => providersTable.id, { onDelete: "cascade" }),
   rating: integer("rating").notNull(),
   comment: text("comment"),
+  reviewerName: text("reviewer_name"),
+  source: text("source"),
+  isSeeded: boolean("is_seeded").notNull().default(false),
   verified: boolean("verified").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertReviewSchema = createInsertSchema(reviewsTable).omit({ id: true, createdAt: true, verified: true });
+export const insertReviewSchema = createInsertSchema(reviewsTable).omit({ id: true, createdAt: true, verified: true, isSeeded: true });
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type Review = typeof reviewsTable.$inferSelect;

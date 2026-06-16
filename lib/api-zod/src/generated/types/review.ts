@@ -12,6 +12,11 @@ export interface Review {
   rating: number;
   /** @nullable */
   comment?: string | null;
+  /** @nullable */
+  reviewerName?: string | null;
+  /** @nullable */
+  source?: string | null;
+  isSeeded: boolean;
   verified: boolean;
   createdAt: string;
 }

@@ -370,16 +370,29 @@ export default function ProviderDetail() {
                   No reviews yet. Be the first!
                 </div>
               ) : (
-                reviews?.map(review => (
+                reviews?.map(review => {
+                  const displayName = review.reviewerName || "Patient";
+                  const avatarLetter = displayName.charAt(0).toUpperCase();
+                  const sourceColors: Record<string, string> = {
+                    Trustpilot: "bg-green-50 text-green-700 border-green-200",
+                    Google: "bg-blue-50 text-blue-700 border-blue-200",
+                  };
+                  const sourceBadgeClass = review.source ? (sourceColors[review.source] ?? "bg-muted text-muted-foreground border-border") : "";
+                  return (
                   <Card key={review.id} className="shadow-sm">
                     <CardContent className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center font-bold text-sm">P</div>
+                          <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center font-bold text-sm">{avatarLetter}</div>
                           <div>
-                            <div className="font-semibold text-sm flex items-center gap-2">
-                              Patient
+                            <div className="font-semibold text-sm flex items-center gap-2 flex-wrap">
+                              {displayName}
                               {review.verified && <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Verified</Badge>}
+                              {review.source && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${sourceBadgeClass}`}>
+                                  {review.source}
+                                </span>
+                              )}
                             </div>
                             <div className="text-xs text-muted-foreground">{format(new Date(review.createdAt), "MMMM d, yyyy")}</div>
                           </div>
@@ -393,7 +406,8 @@ export default function ProviderDetail() {
                       <p className="text-sm text-foreground/90">{review.comment}</p>
                     </CardContent>
                   </Card>
-                ))
+                  );
+                })
               )}
             </div>
           </TabsContent>

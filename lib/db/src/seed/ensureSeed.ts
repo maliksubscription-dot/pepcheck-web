@@ -3,12 +3,14 @@
  *
  * Safe to call on every startup. Uses slug-based upsert so it never
  * duplicates rows, and replaces listings per-provider on each run.
+ * Reviews are seeded once per provider (skipped if seeded reviews already exist).
  */
 
 import { db } from "../index.js";
-import { providersTable, listingsTable, medicationsTable } from "../schema/index.js";
-import { eq } from "drizzle-orm";
+import { providersTable, listingsTable, medicationsTable, reviewsTable } from "../schema/index.js";
+import { eq, and } from "drizzle-orm";
 import { providers } from "./providersData.js";
+import { reviewsByProviderSlug } from "./reviewsData.js";
 
 export async function ensureSeed(): Promise<void> {
   const allMeds = await db
@@ -98,6 +100,31 @@ export async function ensureSeed(): Promise<void> {
           inStock: listing.inStock,
           notes: listing.notes ?? null,
         });
+      }
+    }
+
+    // Seed reviews — only insert if no seeded reviews exist yet for this provider
+    const seedReviews = reviewsByProviderSlug[p.slug];
+    if (seedReviews && seedReviews.length > 0) {
+      const existing = await db
+        .select({ id: reviewsTable.id })
+        .from(reviewsTable)
+        .where(and(eq(reviewsTable.providerId, providerId), eq(reviewsTable.isSeeded, true)))
+        .limit(1);
+
+      if (existing.length === 0) {
+        for (const r of seedReviews) {
+          await db.insert(reviewsTable).values({
+            providerId,
+            rating: r.rating,
+            comment: r.comment,
+            reviewerName: r.reviewerName,
+            source: r.source,
+            isSeeded: true,
+            verified: true,
+            createdAt: new Date(r.createdAt),
+          });
+        }
       }
     }
   }
