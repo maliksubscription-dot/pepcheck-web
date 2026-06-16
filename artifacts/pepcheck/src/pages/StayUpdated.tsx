@@ -70,6 +70,7 @@ export default function StayUpdated() {
             marginHeight={0}
             marginWidth={0}
             title="Stay Updated — Pepcheck"
+            sandbox="allow-scripts allow-same-origin allow-forms"
           />
           {/* Block Tally branding — right side only so submit button stays accessible */}
           <div style={{
